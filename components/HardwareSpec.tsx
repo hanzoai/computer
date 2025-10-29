@@ -6,7 +6,7 @@ const hardware = [
         category: 'The Universal AI System',
         name: 'NVIDIA DGX H100',
         description: 'The universal system for all AI workloads. DGX H100 is the foundational block of DGX SuperPODs, providing the power to train massive models at scale.',
-        imageUrl: 'https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/dgx-h100/dgx-h100-system-3qtr-d.png',
+        imageUrl: '/nvidia-dgx-spark-and-dgx-station.jpg',
         stats: [
           { value: '8x', label: 'NVIDIA H100 GPUs' },
           { value: '640 GB', label: 'Total GPU Memory' },
@@ -20,7 +20,7 @@ const hardware = [
         category: 'The Generative AI Engine',
         name: 'NVIDIA H200 GPU',
         description: 'The H200 is the first GPU to offer HBM3e, delivering 141GB of memory at 4.8 terabytes per second to handle massive datasets for generative AI and HPC.',
-        imageUrl: 'https://nvidianews.nvidia.com/media/854894/nvidia-h200-gpu.jpg',
+        imageUrl: '/h200-nvl.jpg',
         stats: [
             { value: '141 GB', label: 'HBM3e Memory' },
             { value: '4.8 TB/s', label: 'Memory Bandwidth' },
@@ -34,7 +34,7 @@ const hardware = [
         category: 'The AI Workhorse',
         name: 'NVIDIA H100 GPU',
         description: 'The NVIDIA H100 Tensor Core GPU delivers unprecedented performance, scalability, and security for every data center, accelerating workloads from enterprise AI to HPC.',
-        imageUrl: 'https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/h100/nvidia-h100-pcie-800x450-d.jpg',
+        imageUrl: '/nvidia-blackwell-ultra.jpg',
         stats: [
             { value: '80 GB', label: 'HBM3 Memory' },
             { value: '3.35 TB/s', label: 'Memory Bandwidth' },
