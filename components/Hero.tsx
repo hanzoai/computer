@@ -11,9 +11,9 @@ const NvidiaInceptionLogo = () => (
 const Hero: React.FC = () => {
   return (
     <section id="home" className="min-h-screen flex items-center justify-center pt-24 pb-12 relative overflow-hidden">
-        <div 
-            className="absolute inset-0 bg-cover bg-center opacity-20" 
-            style={{backgroundImage: "url('https://images.nvidia.com/aem-dam/Solutions/Data-Center/dgx-superpod/dgx-superpod-hero-d.jpg')"}}
+        <div
+            className="absolute inset-0 bg-cover bg-center opacity-20"
+            style={{backgroundImage: "url('/nvidia-dgx-superpod.jpg')"}}
         ></div>
         <div className="absolute inset-0 bg-gradient-to-b from-dark-bg via-dark-bg/80 to-dark-bg"></div>
 

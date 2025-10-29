@@ -1,12 +1,19 @@
 import React from 'react';
 
+// Using local NVIDIA images from /public directory
 const images = [
-  { src: 'https://images.nvidia.com/aem-dam/Solutions/Data-Center/dgx-superpod/dgx-superpod-liquid-cooled-d.jpg', alt: 'NVIDIA DGX SuperPOD' },
-  { src: 'https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/grace-cpu-superchip/grace-cpu-superchip-d.png', alt: 'NVIDIA Grace CPU Superchip' },
-  { src: 'https://nvidianews.nvidia.com/media/509012/israel-1-supercomputer-dgx-superpod.jpg', alt: 'Datacenter aisle with NVIDIA hardware' },
-  { src: 'https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/ada-lovelace-architecture/rtx-40-series-dlss-3-article-hero-d.jpg', alt: 'Abstract visualization of AI network' },
-  { src: 'https://www.nvidia.com/content/dam/en-zz/Solutions/drive/thor/drive-thor-soc-3qtr-d.jpg', alt: 'NVIDIA DRIVE Thor SoC' },
-  { src: 'https://images.nvidia.com/aem-dam/Solutions/omniverse/omniverse-enterprise-og-1200x630.jpg', alt: 'Digital twin of Earth with data streams' },
+  { src: '/nvidia-dgx-superpod.jpg', alt: 'NVIDIA DGX SuperPOD - Liquid Cooled AI Infrastructure' },
+  { src: '/robotics-and-omniverse.jpg', alt: 'NVIDIA Omniverse - Digital Twin and Robotics Platform' },
+  { src: '/nvidia-ai-data-platform.jpg', alt: 'NVIDIA AI Data Platform - End-to-End AI Solutions' },
+  { src: '/h200-nvl.jpg', alt: 'NVIDIA H200 NVL - Next-Gen AI GPU' },
+  { src: '/industrial-ai.png', alt: 'Industrial AI - Manufacturing and Automation' },
+  { src: '/quantum-computing.jpg', alt: 'Quantum Computing - Future of HPC' },
+  { src: '/nvlink-fusion.jpg', alt: 'NVLink Fusion - High-Speed GPU Interconnect' },
+  { src: '/silicon-photonics-networking.jpg', alt: 'Silicon Photonics - Next-Gen Networking' },
+  { src: '/jetson-thor.png', alt: 'NVIDIA Jetson Thor - Robotics AI Computer' },
+  { src: '/nvidia-blackwell-ultra.jpg', alt: 'NVIDIA Blackwell Ultra - Next-Gen Architecture' },
+  { src: '/gtc-paris-dgx-cloud-lepton.jpg', alt: 'NVIDIA DGX Cloud - AI Infrastructure as a Service' },
+  { src: '/tsmc-chip.jpg', alt: 'Advanced Silicon Manufacturing' },
 ];
 
 const ImageGallery: React.FC = () => {
