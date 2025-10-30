@@ -3,7 +3,9 @@ import React from 'react';
 
 const NvidiaInceptionLogo = () => (
     <div className="flex items-center space-x-2 bg-black/30 backdrop-blur-sm border border-dark-border px-4 py-2 rounded-full">
-        <svg width="24" height="24" viewBox="0 0 108 76" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-6 w-auto"><path d="M103.571 52.8856L99.4286 56.4V19.6L103.571 23.1144V52.8856ZM95.1429 60.1144L82.1429 71.4856V4.5144L95.1429 15.8856V60.1144ZM77.8571 75.8L61.1429 61.8286V14.1714L77.8571 0.2V75.8ZM4.42857 23.1144L8.57143 19.6V56.4L4.42857 52.8856V23.1144ZM12.8571 15.8856L25.8571 4.5144V71.4856L12.8571 60.1144V15.8856ZM30.1429 0.2L46.8571 14.1714V61.8286L30.1429 75.8V0.2ZM54 26.9144L48.8571 31.3714V44.6286L54 49.0856L59.1429 44.6286V31.3714L54 26.9144Z" fill="#76B900"></path></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="316.2 33.8 630.2 118.2" className="h-6 w-auto fill-[#76B900]">
+            <path d="M578.2 34v118h33.3V34h-33.3zm-262-.2v118.1h33.6V60.2l26.2.1c8.6 0 14.6 2.1 18.7 6.5 5.3 5.6 7.4 14.7 7.4 31.2v53.9h32.6V86.7c0-46.6-29.7-52.9-58.7-52.9h-59.8zm315.7.2v118h54c28.8 0 38.2-4.8 48.3-15.5 7.2-7.5 11.8-24.1 11.8-42.2 0-16.6-3.9-31.4-10.8-40.6C723 37.2 705.2 34 678.6 34h-46.7zm33 25.6h14.3c20.8 0 34.2 9.3 34.2 33.5s-13.4 33.6-34.2 33.6h-14.3V59.6zM530.2 34l-27.8 93.5L475.8 34h-36l38 118h48l38.4-118h-34zm231.4 118h33.3V34h-33.3v118zM855 34l-46.5 117.9h32.8l7.4-20.9h55l7 20.8h35.7L899.5 34H855zm21.6 21.5l20.2 55.2h-41l20.8-55.2z"/>
+        </svg>
         <span className="text-gray-300 text-sm font-medium">NVIDIA Inception Partner</span>
     </div>
 )
