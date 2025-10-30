@@ -2,20 +2,21 @@
 import React from 'react';
 
 const HanzoAILogo = () => (
-    <div className="flex items-center space-x-2">
-        <span className="text-3xl font-bold text-gray-400">Hanzo<span className="text-secondary">.</span>AI</span>
+    <div className="flex items-center space-x-3">
+        <img src="/hanzo-h-white.svg" alt="Hanzo" className="h-10 w-auto opacity-60" />
+        <span className="text-3xl font-bold text-gray-400">Hanzo AI</span>
     </div>
 );
 
 const NvidiaInceptionLogo = () => (
     <div className="flex items-center justify-center">
-        <img src="/nvidia-inception-logo.png" alt="NVIDIA Inception Program" className="h-12 w-auto opacity-60" />
+        <img src="/nvidia-inception-simple.svg" alt="NVIDIA Inception Program" className="h-16 w-auto opacity-60" />
     </div>
 );
 
 const TechstarsLogo = () => (
     <div className="flex items-center justify-center">
-        <img src="/techstars-logo.png" alt="Techstars" className="h-12 w-auto opacity-60" />
+        <img src="/techstars-white.svg" alt="Techstars" className="h-8 w-auto opacity-60" />
     </div>
 );
 

@@ -4,10 +4,10 @@ import React from 'react';
 const PartnerLogos = () => (
     <div className="flex items-center justify-center gap-6 flex-wrap">
         <div className="bg-black/30 backdrop-blur-sm border border-dark-border px-4 py-2 rounded-lg">
-            <img src="/nvidia-inception-logo.png" alt="NVIDIA Inception Program" className="h-8 w-auto" />
+            <img src="/nvidia-inception-simple.svg" alt="NVIDIA Inception Program" className="h-12 w-auto" />
         </div>
         <div className="bg-black/30 backdrop-blur-sm border border-dark-border px-4 py-2 rounded-lg">
-            <img src="/techstars-logo.png" alt="Techstars" className="h-8 w-auto" />
+            <img src="/techstars-white.svg" alt="Techstars" className="h-6 w-auto" />
         </div>
     </div>
 )
