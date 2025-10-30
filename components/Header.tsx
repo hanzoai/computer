@@ -1,5 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useCart } from '../src/context/CartContext';
 
 const Logo: React.FC = () => (
   <div className="flex items-center gap-2">
@@ -14,15 +16,19 @@ const Logo: React.FC = () => (
     </svg>
     <div className="text-xl font-bold tracking-wider">
         <span className="text-white">Hanzo</span>
-        <span className="text-primary">.</span>
-        <span className="text-gray-400">Computer</span>
     </div>
   </div>
 );
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  onOpenSearch?: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onOpenSearch }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { getTotalItems } = useCart();
+  const cartItemCount = getTotalItems();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,28 +38,117 @@ const Header: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const [isProductsOpen, setIsProductsOpen] = useState(false);
+
+  const productLinks = [
+    { name: 'DGX Spark', description: '$4,000 - Dedicated DGX Instance', href: '/#pricing' },
+    { name: 'GPU On-Demand', description: 'H100 & H200 GPUs', href: '/#pricing' },
+    { name: 'Enterprise & Resale', description: 'Custom SuperPODs', href: '/#pricing' },
+  ];
+
   const navLinks = [
-    { href: '#features', label: 'Features' },
-    { href: '#hardware', label: 'Hardware' },
-    { href: '#pricing', label: 'Pricing' },
+    { href: '/#features', label: 'Features' },
+    { href: '/#hardware', label: 'Hardware' },
   ];
 
   return (
     <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-dark-bg/80 backdrop-blur-lg border-b border-dark-border' : 'bg-transparent'}`}>
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-        <a href="#home" aria-label="Hanzo.Computer Home">
+        <Link to="/" aria-label="Hanzo Home">
           <Logo />
-        </a>
+        </Link>
         <nav className="hidden md:flex items-center space-x-8">
+          {/* Products Dropdown */}
+          <div
+            className="relative"
+            onMouseEnter={() => setIsProductsOpen(true)}
+            onMouseLeave={() => setIsProductsOpen(false)}
+          >
+            <button className="text-gray-300 hover:text-primary transition-colors duration-300 flex items-center gap-1">
+              Products
+              <svg
+                className={`w-4 h-4 transition-transform duration-200 ${isProductsOpen ? 'rotate-180' : ''}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+
+            {/* Dropdown Menu */}
+            {isProductsOpen && (
+              <div className="absolute top-full left-0 pt-2 w-80">
+                <div className="bg-dark-card border border-dark-border rounded-lg shadow-xl overflow-hidden">
+                  {productLinks.map((product) => (
+                    <a
+                      key={product.name}
+                      href={product.href}
+                      className="block px-4 py-3 hover:bg-primary/10 transition-colors border-b border-dark-border last:border-b-0"
+                    >
+                      <div className="font-semibold text-white mb-1">{product.name}</div>
+                      <div className="text-sm text-gray-400">{product.description}</div>
+                    </a>
+                  ))}
+                  <a
+                    href="/#pricing"
+                    className="block px-4 py-3 bg-primary/5 hover:bg-primary/10 transition-colors text-center text-primary font-semibold"
+                  >
+                    View All Plans →
+                  </a>
+                </div>
+              </div>
+            )}
+          </div>
+
           {navLinks.map((link) => (
             <a key={link.href} href={link.href} className="text-gray-300 hover:text-primary transition-colors duration-300">
               {link.label}
             </a>
           ))}
+          <a href="/#pricing" className="text-gray-300 hover:text-primary transition-colors duration-300">
+            Pricing
+          </a>
         </nav>
         <div className="flex items-center space-x-4">
-            <a href="#contact" className="hidden sm:inline-block bg-primary text-black font-bold py-2 px-6 rounded-md hover:bg-primary-dark transition-all duration-300 transform hover:scale-105">
-                Request Access
+            <button
+              onClick={onOpenSearch}
+              className="hidden md:flex items-center gap-2 text-gray-300 hover:text-primary transition-colors duration-300 px-3 py-1.5 border border-dark-border rounded-md hover:border-primary/50"
+              aria-label="Search"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <span className="text-sm">Search</span>
+              <kbd className="hidden lg:inline-block px-1.5 py-0.5 text-xs bg-dark-bg border border-dark-border rounded">
+                ⌘K
+              </kbd>
+            </button>
+            <Link
+              to="/account"
+              className="text-gray-300 hover:text-primary transition-colors duration-300"
+              aria-label="My Account"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </Link>
+            <Link
+              to="/cart"
+              className="relative text-gray-300 hover:text-primary transition-colors duration-300"
+              aria-label="Shopping Cart"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              {cartItemCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-primary text-black text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  {cartItemCount}
+                </span>
+              )}
+            </Link>
+            <a href="https://hanzo.ai/contact" target="_blank" rel="noopener noreferrer" className="hidden sm:inline-block bg-primary text-black font-bold py-2 px-6 rounded-md hover:bg-primary-dark transition-all duration-300 transform hover:scale-105">
+                Contact Sales
             </a>
             <button
               className="md:hidden text-white z-50"

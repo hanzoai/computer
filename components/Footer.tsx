@@ -14,8 +14,6 @@ const Logo: React.FC = () => (
       </svg>
       <div className="text-xl font-bold tracking-wider">
           <span className="text-white">Hanzo</span>
-          <span className="text-primary">.</span>
-          <span className="text-gray-400">Computer</span>
       </div>
     </div>
   );
@@ -41,19 +39,20 @@ const Footer: React.FC = () => {
                     </div>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 md:col-span-2">
                         <div>
-                            <h4 className="text-white font-bold tracking-wider mb-4">Solutions</h4>
+                            <h4 className="text-white font-bold tracking-wider mb-4">Products</h4>
                             <ul className="space-y-3">
-                                <li><a href="#hardware" className="text-gray-400 hover:text-white">Hardware</a></li>
-                                <li><a href="#features" className="text-gray-400 hover:text-white">Managed Services</a></li>
-                                <li><a href="#pricing" className="text-gray-400 hover:text-white">Pricing</a></li>
+                                <li><a href="/#hardware" className="text-gray-400 hover:text-white">Hardware</a></li>
+                                <li><a href="/#pricing" className="text-gray-400 hover:text-white">Pricing</a></li>
+                                <li><a href="/#features" className="text-gray-400 hover:text-white">Features</a></li>
                             </ul>
                         </div>
                         <div>
-                            <h4 className="text-white font-bold tracking-wider mb-4">Company</h4>
+                            <h4 className="text-white font-bold tracking-wider mb-4">Hanzo Ecosystem</h4>
                             <ul className="space-y-3">
-                                <li><a href="#contact" className="text-gray-400 hover:text-white">About Us</a></li>
-                                <li><a href="https://hanzo.ai" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white">Hanzo.AI</a></li>
-                                <li><a href="#contact" className="text-gray-400 hover:text-white">Contact</a></li>
+                                <li><a href="https://hanzo.ai" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white">Hanzo Cloud</a></li>
+                                <li><a href="https://hanzo.ai/platform" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white">Platform</a></li>
+                                <li><a href="https://hanzo.ai/docs" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white">Documentation</a></li>
+                                <li><a href="https://hanzo.ai/contact" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white">Contact Sales</a></li>
                             </ul>
                         </div>
                         <div>
