@@ -9,8 +9,9 @@ const HanzoAILogo = () => (
 );
 
 const NvidiaInceptionLogo = () => (
-    <div className="flex items-center justify-center">
-        <img src="/nvidia-inception-simple.svg" alt="NVIDIA Inception Program" className="h-16 w-auto opacity-60" />
+    <div className="flex flex-col items-center justify-center gap-1.5 opacity-60">
+        <img src="/nvidia-logo-clean.svg" alt="NVIDIA" className="h-12 w-auto" />
+        <span className="text-[10px] text-gray-400 font-semibold tracking-wider">INCEPTION PROGRAM</span>
     </div>
 );
 
