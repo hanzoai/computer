@@ -100,7 +100,7 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan }) => {
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
-            Contact Sales Required
+            {plan.id === 'cloud-compute' ? 'Visit Hanzo Cloud' : 'Contact Sales Required'}
           </p>
         </div>
       )}
@@ -160,22 +160,22 @@ const plans = [
         purchaseMethod: 'stripe' as const,
     },
     {
-        id: 'gpu-on-demand',
-        name: 'GPU On-Demand',
+        id: 'cloud-compute',
+        name: 'Cloud Compute',
         price: 'Usage-Based',
         priceValue: 0,
         period: '',
-        description: 'Flexible access to raw H100 and H200 GPU power. Pay only for what you use, billed per hour.',
+        description: 'Need on-demand GPU access? Check out Hanzo Cloud for flexible, pay-as-you-go H100 and H200 GPU compute.',
         features: [
             'Access to H100 & H200 GPUs',
             'Scale from 1 to 100s of GPUs',
-            'Persistent Storage Options',
+            'Pay only for what you use',
             'Ideal for Inference & Fine-tuning',
-            'Priority Email Support',
+            'Full Hanzo.AI Cloud Platform',
         ],
-        cta: 'Contact Sales',
+        cta: 'Visit Hanzo Cloud',
         purchaseMethod: 'sales' as const,
-        salesLink: 'https://hanzo.ai/contact',
+        salesLink: 'https://hanzo.ai',
     },
     {
         id: 'enterprise-resale',
