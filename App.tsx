@@ -11,6 +11,9 @@ import Pricing from './components/Pricing';
 import CallToAction from './components/CallToAction';
 import Footer from './components/Footer';
 import ImageGallery from './components/ImageGallery';
+import Testimonials from './components/Testimonials';
+import FAQ from './components/FAQ';
+import TrustSecurity from './components/TrustSecurity';
 import SearchModal from './components/SearchModal';
 import Cart from './src/pages/Cart';
 import Checkout from './src/pages/Checkout';
@@ -26,7 +29,10 @@ const HomePage: React.FC<{ onSelectProduct: (productName: string) => void }> = (
       <Features />
       <HardwareSpec onSelectProduct={onSelectProduct} />
       <ImageGallery />
+      <Testimonials />
+      <TrustSecurity />
       <Pricing />
+      <FAQ />
       <CallToAction />
     </>
   );
