@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { CartProvider } from './src/context/CartContext';
 import Header from './components/Header';
 import Hero from './components/Hero';
+import DGXSparkHighlight from './components/DGXSparkHighlight';
 import Partners from './components/Partners';
 import Features from './components/Features';
 import HardwareSpec from './components/HardwareSpec';
@@ -8,9 +11,30 @@ import Pricing from './components/Pricing';
 import CallToAction from './components/CallToAction';
 import Footer from './components/Footer';
 import ImageGallery from './components/ImageGallery';
+import SearchModal from './components/SearchModal';
+import Cart from './src/pages/Cart';
+import Checkout from './src/pages/Checkout';
+import Account from './src/pages/Account';
+import DGXSpark from './src/pages/DGXSpark';
+
+const HomePage: React.FC<{ onSelectProduct: (productName: string) => void }> = ({ onSelectProduct }) => {
+  return (
+    <>
+      <Hero />
+      <DGXSparkHighlight />
+      <Partners />
+      <Features />
+      <HardwareSpec onSelectProduct={onSelectProduct} />
+      <ImageGallery />
+      <Pricing />
+      <CallToAction />
+    </>
+  );
+};
 
 const App: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const handleSelectProduct = (productName: string) => {
     setSelectedProduct(productName);
@@ -19,28 +43,53 @@ const App: React.FC = () => {
       pricingSection.scrollIntoView({ behavior: 'smooth' });
     }
   };
-  
+
+  // Cmd+K or Ctrl+K to open search
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsSearchOpen(true);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return (
-    <div className="bg-dark-bg text-gray-200 font-sans antialiased relative overflow-x-hidden">
-      <div className="absolute top-0 left-0 w-full h-full z-0">
-        <div className="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] bg-secondary/10 rounded-full blur-[150px]"></div>
-        <div className="absolute bottom-[-20%] right-[-20%] w-[60%] h-[60%] bg-primary/10 rounded-full blur-[150px]"></div>
-      </div>
-      
-      <div className="relative z-10">
-        <Header />
-        <main>
-          <Hero />
-          <Partners />
-          <Features />
-          <HardwareSpec onSelectProduct={handleSelectProduct} />
-          <ImageGallery />
-          <Pricing />
-          <CallToAction />
-        </main>
-        <Footer />
-      </div>
-    </div>
+    <Router>
+      <CartProvider>
+        <div className="bg-dark-bg text-gray-200 font-sans antialiased relative overflow-x-hidden">
+          <div className="absolute top-0 left-0 w-full h-full z-0">
+            <div className="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] bg-secondary/10 rounded-full blur-[150px]"></div>
+            <div className="absolute bottom-[-20%] right-[-20%] w-[60%] h-[60%] bg-primary/10 rounded-full blur-[150px]"></div>
+          </div>
+
+          <div className="relative z-10">
+            <Header onOpenSearch={() => setIsSearchOpen(true)} />
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <main>
+                    <HomePage onSelectProduct={handleSelectProduct} />
+                  </main>
+                }
+              />
+              <Route path="/dgx-spark" element={<DGXSpark />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/account" element={<Account />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+            <Footer />
+          </div>
+
+          <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+        </div>
+      </CartProvider>
+    </Router>
   );
 };
 
