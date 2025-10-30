@@ -60,8 +60,8 @@ const App: React.FC = () => {
   return (
     <Router>
       <CartProvider>
-        <div className="bg-dark-bg text-gray-200 font-sans antialiased relative overflow-x-hidden">
-          <div className="absolute top-0 left-0 w-full h-full z-0">
+        <div className="bg-dark-bg text-gray-200 font-sans antialiased relative overflow-x-hidden max-w-full">
+          <div className="absolute top-0 left-0 w-full h-full z-0 overflow-hidden">
             <div className="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] bg-secondary/10 rounded-full blur-[150px]"></div>
             <div className="absolute bottom-[-20%] right-[-20%] w-[60%] h-[60%] bg-primary/10 rounded-full blur-[150px]"></div>
           </div>
