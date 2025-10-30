@@ -147,9 +147,6 @@ const Header: React.FC<HeaderProps> = ({ onOpenSearch }) => {
                 </span>
               )}
             </Link>
-            <a href="https://hanzo.ai/contact" target="_blank" rel="noopener noreferrer" className="hidden sm:inline-block bg-primary text-black font-bold py-2 px-6 rounded-md hover:bg-primary-dark transition-all duration-300 transform hover:scale-105">
-                Contact Sales
-            </a>
             <button
               className="md:hidden text-white z-50"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
