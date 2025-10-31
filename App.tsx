@@ -14,6 +14,7 @@ import ImageGallery from './components/ImageGallery';
 import Testimonials from './components/Testimonials';
 import FAQ from './components/FAQ';
 import TrustSecurity from './components/TrustSecurity';
+import CloudPricing from './components/CloudPricing';
 import SearchModal from './components/SearchModal';
 import Cart from './src/pages/Cart';
 import Checkout from './src/pages/Checkout';
@@ -32,6 +33,7 @@ const HomePage: React.FC<{ onSelectProduct: (productName: string) => void }> = (
       <Testimonials />
       <TrustSecurity />
       <Pricing />
+      <CloudPricing />
       <FAQ />
       <CallToAction />
     </>
