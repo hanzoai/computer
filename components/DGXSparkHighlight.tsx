@@ -23,7 +23,7 @@ const DGXSparkHighlight: React.FC = () => {
   };
 
   return (
-    <section className="py-20 md:py-28 bg-gradient-to-b from-dark-bg to-dark-card relative overflow-hidden">
+    <section id="dgx-spark" className="py-20 md:py-28 bg-gradient-to-b from-dark-bg to-dark-card relative overflow-hidden">
       {/* Decorative elements */}
       <div className="absolute inset-0 opacity-30">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[120px]" />
