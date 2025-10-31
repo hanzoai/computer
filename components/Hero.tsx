@@ -39,7 +39,7 @@ const Hero: React.FC = () => {
                 <a href="#pricing" className="bg-primary text-black font-bold py-4 px-10 rounded-lg hover:bg-primary-dark transition-all duration-300 transform hover:scale-105 text-lg">
                     Get Started
                 </a>
-                <a href="#hardware" className="border border-dark-border text-white font-medium py-4 px-10 rounded-lg hover:bg-white/10 transition-all duration-300 text-lg">
+                <a href="#dgx-spark" className="border border-dark-border text-white font-medium py-4 px-10 rounded-lg hover:bg-white/10 transition-all duration-300 text-lg">
                     View Hardware
                 </a>
             </div>
