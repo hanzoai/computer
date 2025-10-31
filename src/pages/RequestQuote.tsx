@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { submitRFQ } from '../lib/supabase';
 
 interface RFQFormData {
   // Company Information
@@ -92,15 +93,30 @@ const RequestQuote: React.FC = () => {
     setErrorMessage('');
 
     try {
-      // TODO: Replace with actual API call
-      // const response = await fetch('/api/rfq', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(formData),
-      // });
+      // Convert duration to months for database
+      let duration_months: number | undefined;
+      if (formData.duration === 'one-time') {
+        duration_months = undefined; // null in database
+      } else if (formData.duration === 'monthly') {
+        duration_months = 1;
+      } else if (formData.duration === '6-month') {
+        duration_months = 6;
+      } else if (formData.duration === 'annual') {
+        duration_months = 12;
+      }
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Submit to Supabase
+      await submitRFQ({
+        company: formData.company,
+        email: formData.email,
+        phone: formData.phone || undefined,
+        gpu_type: formData.gpuType,
+        quantity: formData.quantity,
+        duration_months,
+        use_case: formData.useCase,
+        budget_range: formData.budgetRange || undefined,
+        additional_requirements: formData.additionalRequirements || undefined,
+      });
 
       setSubmitStatus('success');
 

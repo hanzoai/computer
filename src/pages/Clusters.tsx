@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { submitClusterRequest } from '../lib/supabase';
 
 interface ClusterFormData {
   firstName: string;
@@ -51,8 +52,19 @@ const Clusters: React.FC = () => {
     setSubmitStatus('idle');
 
     try {
-      // TODO: Replace with actual API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Submit to Supabase
+      await submitClusterRequest({
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        email: formData.email,
+        company: formData.company,
+        cluster_requirements: formData.clusterRequirements,
+        number_of_gpus: formData.numberOfGPUs,
+        rental_duration: formData.rentalDuration,
+        project_description: formData.projectDescription,
+        hear_about_us: formData.hearAboutUs,
+      });
+
       setSubmitStatus('success');
 
       // Reset form after success
