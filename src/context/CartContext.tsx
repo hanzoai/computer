@@ -8,6 +8,8 @@ export interface CartItem {
   description: string;
   purchaseMethod: 'stripe' | 'sales';
   image?: string;
+  subscriptionType?: 'monthly' | 'one-time';
+  interval?: 'monthly';
 }
 
 interface CartContextType {

@@ -234,3 +234,67 @@ export const updateClusterRequestStatus = async (id: string, status: ClusterRequ
   if (error) throw error;
   return data;
 };
+
+// Quote management functions
+export const createQuote = async (quoteData: Omit<Quote, 'id' | 'created_at' | 'status'>) => {
+  const { data, error } = await supabase
+    .from('quotes')
+    .insert([{
+      ...quoteData,
+      status: 'sent',
+      created_at: new Date().toISOString(),
+    }])
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+};
+
+export const getAllQuotes = async (status?: string) => {
+  let query = supabase
+    .from('quotes')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (status) {
+    query = query.eq('status', status);
+  }
+
+  const { data, error } = await query;
+  if (error) throw error;
+  return data;
+};
+
+export const updateQuoteStatus = async (id: string, status: Quote['status']) => {
+  const { data, error } = await supabase
+    .from('quotes')
+    .update({ status })
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+};
+
+// Generate unique quote number
+export const generateQuoteNumber = () => {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+  return `Q${year}${month}-${random}`;
+};
+
+// Check if user is admin
+export const checkAdminRole = async (userId: string) => {
+  const { data, error } = await supabase
+    .from('users')
+    .select('role')
+    .eq('id', userId)
+    .single();
+
+  if (error) throw error;
+  return data?.role === 'admin';
+};

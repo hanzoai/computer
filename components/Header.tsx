@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../src/context/CartContext';
+import { supabase } from '../src/lib/supabase';
 
 const Logo: React.FC = () => (
   <div className="flex items-center gap-2">
@@ -27,8 +28,11 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ onOpenSearch }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const { getTotalItems } = useCart();
   const cartItemCount = getTotalItems();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -37,6 +41,38 @@ const Header: React.FC<HeaderProps> = ({ onOpenSearch }) => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Check for authenticated user
+  useEffect(() => {
+    const checkUser = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        setUser(session?.user || null);
+      } catch (error) {
+        console.error('Error checking auth:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkUser();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user || null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut();
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
 
   const [isProductsOpen, setIsProductsOpen] = useState(false);
 
@@ -125,15 +161,46 @@ const Header: React.FC<HeaderProps> = ({ onOpenSearch }) => {
                 ⌘K
               </kbd>
             </button>
-            <Link
-              to="/account"
-              className="text-gray-300 hover:text-primary transition-colors duration-300"
-              aria-label="My Account"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-            </Link>
+            {user ? (
+              <div className="relative group">
+                <button
+                  className="text-gray-300 hover:text-primary transition-colors duration-300"
+                  aria-label="My Account"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </button>
+                <div className="absolute right-0 mt-2 w-48 bg-dark-card border border-dark-border rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                  <Link
+                    to="/dashboard"
+                    className="block px-4 py-2 text-gray-300 hover:bg-primary/10 hover:text-white transition-colors"
+                  >
+                    Dashboard
+                  </Link>
+                  <Link
+                    to="/account"
+                    className="block px-4 py-2 text-gray-300 hover:bg-primary/10 hover:text-white transition-colors"
+                  >
+                    Account Settings
+                  </Link>
+                  <hr className="border-dark-border" />
+                  <button
+                    onClick={handleSignOut}
+                    className="block w-full text-left px-4 py-2 text-gray-300 hover:bg-red-500/10 hover:text-red-400 transition-colors"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <Link
+                to="/signin"
+                className="hidden md:inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-secondary text-white font-semibold rounded-lg hover:opacity-90 transition-opacity"
+              >
+                Sign In
+              </Link>
+            )}
             <Link
               to="/cart"
               className="relative text-gray-300 hover:text-primary transition-colors duration-300"
@@ -162,13 +229,41 @@ const Header: React.FC<HeaderProps> = ({ onOpenSearch }) => {
         </div>
       </div>
       {/* Mobile Menu */}
-      <div className={`md:hidden absolute top-full left-0 w-full bg-dark-card transition-all duration-300 ease-in-out transform ${isMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'} overflow-hidden`}>
+      <div className={`md:hidden absolute top-full left-0 w-full bg-dark-card transition-all duration-300 ease-in-out transform ${isMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'} overflow-hidden`}>
           <div className="flex flex-col items-center space-y-4 py-6">
              {navLinks.map((link) => (
                 <Link key={link.href} to={link.href} className="text-gray-300 hover:text-primary transition-colors duration-300 text-lg" onClick={() => setIsMenuOpen(false)}>
                   {link.label}
                 </Link>
               ))}
+              {user ? (
+                <>
+                  <Link to="/dashboard" className="text-gray-300 hover:text-primary transition-colors duration-300 text-lg" onClick={() => setIsMenuOpen(false)}>
+                    Dashboard
+                  </Link>
+                  <Link to="/account" className="text-gray-300 hover:text-primary transition-colors duration-300 text-lg" onClick={() => setIsMenuOpen(false)}>
+                    Account
+                  </Link>
+                  <button
+                    onClick={() => {
+                      handleSignOut();
+                      setIsMenuOpen(false);
+                    }}
+                    className="text-red-400 hover:text-red-300 transition-colors duration-300 text-lg"
+                  >
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link to="/signin" className="text-gray-300 hover:text-primary transition-colors duration-300 text-lg" onClick={() => setIsMenuOpen(false)}>
+                    Sign In
+                  </Link>
+                  <Link to="/signup" className="w-11/12 text-center bg-gradient-to-r from-primary to-secondary text-white font-bold py-3 px-6 rounded-md hover:opacity-90 transition-all duration-300" onClick={() => setIsMenuOpen(false)}>
+                    Sign Up
+                  </Link>
+                </>
+              )}
               <Link to="/request-quote" className="w-11/12 text-center bg-primary text-black font-bold py-3 px-6 rounded-md hover:bg-primary-dark transition-all duration-300 transform hover:scale-105" onClick={() => setIsMenuOpen(false)}>
                   Request Quote
               </Link>

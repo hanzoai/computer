@@ -33,6 +33,7 @@ const Dashboard: React.FC = () => {
   }, []);
 
   const loadDashboardData = async (userId: string) => {
+    setLoading(true);
     try {
       const [rfqsData, quotesData, ordersData, subscriptionsData] = await Promise.all([
         getUserRFQs(userId),
@@ -47,6 +48,8 @@ const Dashboard: React.FC = () => {
       setSubscriptions(subscriptionsData || []);
     } catch (error) {
       console.error('Error loading dashboard data:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -54,10 +57,93 @@ const Dashboard: React.FC = () => {
     await supabase.auth.signOut();
   };
 
+  const handleAcceptQuote = async (quoteId: string) => {
+    try {
+      const { error } = await supabase
+        .from('quotes')
+        .update({ status: 'accepted' })
+        .eq('id', quoteId);
+
+      if (error) throw error;
+
+      // Create an order from the accepted quote
+      const quote = quotes.find(q => q.id === quoteId);
+      if (quote) {
+        const orderNumber = `ORD-${Date.now()}`;
+        const { error: orderError } = await supabase
+          .from('orders')
+          .insert({
+            quote_id: quoteId,
+            order_number: orderNumber,
+            total: quote.total,
+            status: 'pending'
+          });
+
+        if (orderError) throw orderError;
+      }
+
+      // Reload dashboard data
+      if (user) {
+        await loadDashboardData(user.id);
+      }
+    } catch (error) {
+      console.error('Error accepting quote:', error);
+      alert('Failed to accept quote. Please try again.');
+    }
+  };
+
+  const handleRejectQuote = async (quoteId: string) => {
+    try {
+      const { error } = await supabase
+        .from('quotes')
+        .update({ status: 'rejected' })
+        .eq('id', quoteId);
+
+      if (error) throw error;
+
+      // Reload dashboard data
+      if (user) {
+        await loadDashboardData(user.id);
+      }
+    } catch (error) {
+      console.error('Error rejecting quote:', error);
+      alert('Failed to reject quote. Please try again.');
+    }
+  };
+
+  const handleCancelSubscription = async (subscriptionId: string) => {
+    if (!confirm('Are you sure you want to cancel this subscription?')) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('subscriptions')
+        .update({
+          status: 'cancelled',
+          cancelled_at: new Date().toISOString()
+        })
+        .eq('id', subscriptionId);
+
+      if (error) throw error;
+
+      // Reload dashboard data
+      if (user) {
+        await loadDashboardData(user.id);
+      }
+    } catch (error) {
+      console.error('Error canceling subscription:', error);
+      alert('Failed to cancel subscription. Please try again.');
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-dark-bg flex items-center justify-center">
-        <div className="text-white">Loading...</div>
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-gray-400">Loading dashboard...</p>
+        </div>
       </div>
     );
   }
@@ -213,9 +299,20 @@ const Dashboard: React.FC = () => {
                       Created: {new Date(quote.created_at).toLocaleDateString()}
                     </div>
                     {quote.status === 'sent' && (
-                      <button className="px-4 py-2 bg-secondary text-white font-bold rounded-lg hover:bg-secondary/80 transition-all">
-                        Accept Quote
-                      </button>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleAcceptQuote(quote.id)}
+                          className="px-4 py-2 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 transition-all"
+                        >
+                          Accept
+                        </button>
+                        <button
+                          onClick={() => handleRejectQuote(quote.id)}
+                          className="px-4 py-2 border border-red-500/30 text-red-400 rounded-lg hover:bg-red-500/10 transition-all"
+                        >
+                          Reject
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -299,7 +396,10 @@ const Dashboard: React.FC = () => {
                   </div>
                   {subscription.status === 'active' && (
                     <div className="flex justify-end">
-                      <button className="px-4 py-2 border border-red-500/30 text-red-400 rounded-lg hover:bg-red-500/10 transition-all">
+                      <button
+                        onClick={() => handleCancelSubscription(subscription.id)}
+                        className="px-4 py-2 border border-red-500/30 text-red-400 rounded-lg hover:bg-red-500/10 transition-all"
+                      >
                         Cancel Subscription
                       </button>
                     </div>

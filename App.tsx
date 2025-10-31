@@ -28,6 +28,10 @@ import RequestQuote from './src/pages/RequestQuote';
 import Clusters from './src/pages/Clusters';
 import FeaturesPage from './src/pages/Features';
 import Solutions from './src/pages/Solutions';
+import Dashboard from './src/pages/Dashboard';
+import SignIn from './src/pages/SignIn';
+import SignUp from './src/pages/SignUp';
+import AdminDashboard from './src/pages/AdminDashboard';
 
 const HomePage: React.FC<{ onSelectProduct: (productName: string) => void }> = ({ onSelectProduct }) => {
   return (
@@ -91,6 +95,10 @@ const App: React.FC = () => {
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/account" element={<Account />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/signin" element={<SignIn />} />
+              <Route path="/signup" element={<SignUp />} />
               <Route path="/request-quote" element={<RequestQuote />} />
               <Route path="/clusters" element={<Clusters />} />
               <Route path="/features" element={<FeaturesPage />} />
