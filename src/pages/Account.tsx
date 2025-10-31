@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 
 interface Order {
   id: string;
@@ -20,9 +21,35 @@ interface Order {
 
 const Account: React.FC = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const orderPlaced = searchParams.get('order_placed') === 'true';
   const [orders, setOrders] = useState<Order[]>([]);
   const [showSuccess, setShowSuccess] = useState(orderPlaced);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Check if user is logged in with Supabase
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        // User is logged in, redirect to dashboard
+        navigate('/dashboard');
+        return;
+      }
+      setLoading(false);
+    };
+
+    checkAuth();
+
+    // Also listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user) {
+        navigate('/dashboard');
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   useEffect(() => {
     const savedOrders = localStorage.getItem('orders');
@@ -70,11 +97,38 @@ const Account: React.FC = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-dark-bg flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-gray-400">Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-dark-bg py-20">
       <div className="container mx-auto px-6">
         <div className="max-w-5xl mx-auto">
-          <h1 className="text-4xl font-bold text-white mb-8">My Account</h1>
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-4xl font-bold text-white">My Account</h1>
+            <div className="flex gap-4">
+              <Link
+                to="/signin"
+                className="px-4 py-2 bg-primary text-black font-bold rounded-lg hover:bg-primary-dark transition-all"
+              >
+                Sign In
+              </Link>
+              <Link
+                to="/request-quote"
+                className="px-4 py-2 border border-dark-border text-white rounded-lg hover:bg-white/10 transition-all"
+              >
+                Request Quote
+              </Link>
+            </div>
+          </div>
 
           {showSuccess && (
             <div className="mb-8 p-6 bg-green-500/10 border border-green-500/30 rounded-xl flex items-start gap-4 animate-slide-down">
