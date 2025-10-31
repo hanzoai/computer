@@ -1,0 +1,317 @@
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { supabase, getUserRFQs, getUserQuotes, getUserOrders, getUserSubscriptions } from '../lib/supabase';
+import type { RFQ, Quote, Order, Subscription } from '../lib/supabase';
+
+const Dashboard: React.FC = () => {
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [rfqs, setRfqs] = useState<RFQ[]>([]);
+  const [quotes, setQuotes] = useState<Quote[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
+
+  useEffect(() => {
+    // Check if user is logged in
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        loadDashboardData(session.user.id);
+      }
+      setLoading(false);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        loadDashboardData(session.user.id);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const loadDashboardData = async (userId: string) => {
+    try {
+      const [rfqsData, quotesData, ordersData, subscriptionsData] = await Promise.all([
+        getUserRFQs(userId),
+        getUserQuotes(userId),
+        getUserOrders(userId),
+        getUserSubscriptions(userId),
+      ]);
+
+      setRfqs(rfqsData || []);
+      setQuotes(quotesData || []);
+      setOrders(ordersData || []);
+      setSubscriptions(subscriptionsData || []);
+    } catch (error) {
+      console.error('Error loading dashboard data:', error);
+    }
+  };
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-dark-bg flex items-center justify-center">
+        <div className="text-white">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-dark-bg py-24">
+        <div className="container mx-auto px-6 max-w-2xl text-center">
+          <h1 className="text-4xl font-bold text-white mb-6">Customer Dashboard</h1>
+          <p className="text-gray-400 mb-8">Please sign in to view your dashboard</p>
+          <div className="space-y-4">
+            <Link
+              to="/signin"
+              className="inline-block px-8 py-4 bg-primary text-black font-bold rounded-lg hover:bg-primary-dark transition-all"
+            >
+              Sign In
+            </Link>
+            <p className="text-gray-500">
+              Don't have an account?{' '}
+              <Link to="/signup" className="text-primary hover:underline">
+                Sign Up
+              </Link>
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const getStatusColor = (status: string) => {
+    const colors: Record<string, string> = {
+      pending: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
+      reviewing: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+      quoted: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
+      sent: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
+      accepted: 'bg-green-500/20 text-green-400 border-green-500/30',
+      paid: 'bg-green-500/20 text-green-400 border-green-500/30',
+      active: 'bg-green-500/20 text-green-400 border-green-500/30',
+      rejected: 'bg-red-500/20 text-red-400 border-red-500/30',
+      cancelled: 'bg-gray-500/20 text-gray-400 border-gray-500/30',
+    };
+    return colors[status] || 'bg-gray-500/20 text-gray-400 border-gray-500/30';
+  };
+
+  return (
+    <div className="min-h-screen bg-dark-bg py-24">
+      <div className="container mx-auto px-6 max-w-7xl">
+        {/* Header */}
+        <div className="mb-12">
+          <div className="flex justify-between items-start mb-6">
+            <div>
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">Dashboard</h1>
+              <p className="text-gray-400">Welcome back, {user.email}</p>
+            </div>
+            <button
+              onClick={handleSignOut}
+              className="px-4 py-2 border border-dark-border text-white rounded-lg hover:bg-white/10 transition-all"
+            >
+              Sign Out
+            </button>
+          </div>
+
+          {/* Quick Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="bg-black/40 backdrop-blur-sm border border-dark-border rounded-xl p-6">
+              <div className="text-3xl font-bold text-primary mb-2">{rfqs.length}</div>
+              <div className="text-gray-400">RFQ Submissions</div>
+            </div>
+            <div className="bg-black/40 backdrop-blur-sm border border-dark-border rounded-xl p-6">
+              <div className="text-3xl font-bold text-secondary mb-2">{quotes.length}</div>
+              <div className="text-gray-400">Quotes Received</div>
+            </div>
+            <div className="bg-black/40 backdrop-blur-sm border border-dark-border rounded-xl p-6">
+              <div className="text-3xl font-bold text-green-400 mb-2">{orders.length}</div>
+              <div className="text-gray-400">Active Orders</div>
+            </div>
+            <div className="bg-black/40 backdrop-blur-sm border border-dark-border rounded-xl p-6">
+              <div className="text-3xl font-bold text-purple-400 mb-2">{subscriptions.filter(s => s.status === 'active').length}</div>
+              <div className="text-gray-400">Subscriptions</div>
+            </div>
+          </div>
+        </div>
+
+        {/* RFQs Section */}
+        <section className="mb-12">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-white">Request for Quotes</h2>
+            <Link
+              to="/request-quote"
+              className="px-4 py-2 bg-primary text-black font-bold rounded-lg hover:bg-primary-dark transition-all"
+            >
+              + New RFQ
+            </Link>
+          </div>
+
+          {rfqs.length === 0 ? (
+            <div className="bg-black/40 backdrop-blur-sm border border-dark-border rounded-xl p-8 text-center">
+              <p className="text-gray-400">No RFQs submitted yet</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {rfqs.map((rfq) => (
+                <div
+                  key={rfq.id}
+                  className="bg-black/40 backdrop-blur-sm border border-dark-border rounded-xl p-6 hover:border-primary/50 transition-all"
+                >
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <h3 className="text-xl font-bold text-white mb-1">{rfq.gpu_type.toUpperCase()} × {rfq.quantity}</h3>
+                      <p className="text-gray-400">{rfq.company}</p>
+                    </div>
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor(rfq.status)}`}>
+                      {rfq.status}
+                    </span>
+                  </div>
+                  <p className="text-gray-300 mb-4 line-clamp-2">{rfq.use_case}</p>
+                  <div className="text-sm text-gray-500">
+                    Submitted: {new Date(rfq.created_at).toLocaleDateString()}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* Quotes Section */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold text-white mb-6">Quotes</h2>
+
+          {quotes.length === 0 ? (
+            <div className="bg-black/40 backdrop-blur-sm border border-dark-border rounded-xl p-8 text-center">
+              <p className="text-gray-400">No quotes received yet</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {quotes.map((quote) => (
+                <div
+                  key={quote.id}
+                  className="bg-black/40 backdrop-blur-sm border border-dark-border rounded-xl p-6 hover:border-secondary/50 transition-all"
+                >
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <h3 className="text-xl font-bold text-white mb-1">{quote.quote_number}</h3>
+                      <p className="text-gray-400">${quote.total.toLocaleString()}</p>
+                    </div>
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor(quote.status)}`}>
+                      {quote.status}
+                    </span>
+                  </div>
+                  {quote.notes && <p className="text-gray-300 mb-4">{quote.notes}</p>}
+                  <div className="flex justify-between items-center">
+                    <div className="text-sm text-gray-500">
+                      Created: {new Date(quote.created_at).toLocaleDateString()}
+                    </div>
+                    {quote.status === 'sent' && (
+                      <button className="px-4 py-2 bg-secondary text-white font-bold rounded-lg hover:bg-secondary/80 transition-all">
+                        Accept Quote
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* Orders Section */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold text-white mb-6">Orders</h2>
+
+          {orders.length === 0 ? (
+            <div className="bg-black/40 backdrop-blur-sm border border-dark-border rounded-xl p-8 text-center">
+              <p className="text-gray-400">No orders yet</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {orders.map((order) => (
+                <div
+                  key={order.id}
+                  className="bg-black/40 backdrop-blur-sm border border-dark-border rounded-xl p-6 hover:border-green-500/50 transition-all"
+                >
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <h3 className="text-xl font-bold text-white mb-1">{order.order_number}</h3>
+                      <p className="text-gray-400">${order.total.toLocaleString()}</p>
+                    </div>
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor(order.status)}`}>
+                      {order.status}
+                    </span>
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    Ordered: {new Date(order.created_at).toLocaleDateString()}
+                    {order.paid_at && ` • Paid: ${new Date(order.paid_at).toLocaleDateString()}`}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* Subscriptions Section */}
+        <section>
+          <h2 className="text-2xl font-bold text-white mb-6">GPU Subscriptions</h2>
+
+          {subscriptions.length === 0 ? (
+            <div className="bg-black/40 backdrop-blur-sm border border-dark-border rounded-xl p-8 text-center">
+              <p className="text-gray-400">No active subscriptions</p>
+              <Link
+                to="/request-quote"
+                className="inline-block mt-4 text-primary hover:underline"
+              >
+                Request a quote for GPU leasing
+              </Link>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {subscriptions.map((subscription) => (
+                <div
+                  key={subscription.id}
+                  className="bg-black/40 backdrop-blur-sm border border-dark-border rounded-xl p-6 hover:border-purple-500/50 transition-all"
+                >
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <h3 className="text-xl font-bold text-white mb-1">
+                        {subscription.gpu_type} × {subscription.quantity}
+                      </h3>
+                      <p className="text-gray-400">
+                        {subscription.current_period_start && subscription.current_period_end && (
+                          <>
+                            {new Date(subscription.current_period_start).toLocaleDateString()} -{' '}
+                            {new Date(subscription.current_period_end).toLocaleDateString()}
+                          </>
+                        )}
+                      </p>
+                    </div>
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor(subscription.status)}`}>
+                      {subscription.status}
+                    </span>
+                  </div>
+                  {subscription.status === 'active' && (
+                    <div className="flex justify-end">
+                      <button className="px-4 py-2 border border-red-500/30 text-red-400 rounded-lg hover:bg-red-500/10 transition-all">
+                        Cancel Subscription
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      </div>
+    </div>
+  );
+};
+
+export default Dashboard;

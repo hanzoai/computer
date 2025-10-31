@@ -47,8 +47,9 @@ const Header: React.FC<HeaderProps> = ({ onOpenSearch }) => {
   ];
 
   const navLinks = [
-    { href: '/#features', label: 'Features' },
-    { href: '/#hardware', label: 'Hardware' },
+    { href: '/features', label: 'Hardware' },
+    { href: '/solutions', label: 'Solutions' },
+    { href: '/clusters', label: 'Clusters' },
   ];
 
   return (
@@ -102,9 +103,9 @@ const Header: React.FC<HeaderProps> = ({ onOpenSearch }) => {
           </div>
 
           {navLinks.map((link) => (
-            <a key={link.href} href={link.href} className="text-gray-300 hover:text-primary transition-colors duration-300">
+            <Link key={link.href} to={link.href} className="text-gray-300 hover:text-primary transition-colors duration-300">
               {link.label}
-            </a>
+            </Link>
           ))}
           <a href="/#pricing" className="text-gray-300 hover:text-primary transition-colors duration-300">
             Pricing
@@ -164,13 +165,13 @@ const Header: React.FC<HeaderProps> = ({ onOpenSearch }) => {
       <div className={`md:hidden absolute top-full left-0 w-full bg-dark-card transition-all duration-300 ease-in-out transform ${isMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'} overflow-hidden`}>
           <div className="flex flex-col items-center space-y-4 py-6">
              {navLinks.map((link) => (
-                <a key={link.href} href={link.href} className="text-gray-300 hover:text-primary transition-colors duration-300 text-lg" onClick={() => setIsMenuOpen(false)}>
+                <Link key={link.href} to={link.href} className="text-gray-300 hover:text-primary transition-colors duration-300 text-lg" onClick={() => setIsMenuOpen(false)}>
                   {link.label}
-                </a>
+                </Link>
               ))}
-              <a href="#contact" className="w-11/12 text-center bg-primary text-black font-bold py-3 px-6 rounded-md hover:bg-primary-dark transition-all duration-300 transform hover:scale-105" onClick={() => setIsMenuOpen(false)}>
-                  Request Access
-              </a>
+              <Link to="/request-quote" className="w-11/12 text-center bg-primary text-black font-bold py-3 px-6 rounded-md hover:bg-primary-dark transition-all duration-300 transform hover:scale-105" onClick={() => setIsMenuOpen(false)}>
+                  Request Quote
+              </Link>
           </div>
       </div>
     </header>
