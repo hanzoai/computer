@@ -236,8 +236,8 @@ const gpuPlans = [
     {
         id: 'rtx-pro-6000',
         name: 'RTX PRO 6000 Blackwell',
-        price: '$8,357',
-        priceValue: 8357,
+        price: '$8,999',
+        priceValue: 8999,
         leasePrice: '$2,500',
         leasePriceValue: 2500,
         period: 'One-Time Purchase',

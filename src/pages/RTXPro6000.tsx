@@ -11,7 +11,7 @@ const RTXPro6000: React.FC = () => {
     addItem({
       id: 'rtx-pro-6000',
       name: 'RTX PRO 6000 Blackwell',
-      price: 8357,
+      price: 8999,
       description: 'Professional workstation GPU with 96GB GDDR7 memory. Perfect for AI-enhanced applications, data science, and visualization.',
       purchaseMethod: 'stripe',
       image: '/nvidia-blackwell-ultra.jpg',
@@ -140,7 +140,7 @@ const RTXPro6000: React.FC = () => {
                     : 'bg-primary text-black hover:bg-primary-dark'
                 }`}
               >
-                {added ? '✓ Added to Cart' : 'Add to Cart - $8,357'}
+                {added ? '✓ Added to Cart' : 'Add to Cart - $8,999'}
               </button>
               <a
                 href="/#pricing"
@@ -220,7 +220,7 @@ const RTXPro6000: React.FC = () => {
                   : 'bg-primary text-black hover:bg-primary-dark'
               }`}
             >
-              {added ? '✓ Added to Cart' : 'Add to Cart - $8,357'}
+              {added ? '✓ Added to Cart' : 'Add to Cart - $8,999'}
             </button>
           </div>
         </div>
