@@ -107,6 +107,18 @@ export interface Subscription {
   cancelled_at?: string;
 }
 
+export interface UsageRecord {
+  id: string;
+  user_id: string;
+  reservation_id?: string;
+  gpu_type: string;
+  hours_used: number;
+  compute_units: number;
+  cost_usd: number;
+  timestamp: string;
+  metadata?: any;
+}
+
 // Helper functions
 export const submitRFQ = async (rfqData: Omit<RFQ, 'id' | 'created_at' | 'updated_at' | 'status'>) => {
   const { data, error } = await supabase
@@ -297,4 +309,117 @@ export const checkAdminRole = async (userId: string) => {
 
   if (error) throw error;
   return data?.role === 'admin';
+};
+
+// Usage Analytics Functions
+export const getUserUsage = async (userId: string, startDate: Date, endDate: Date) => {
+  const { data, error } = await supabase
+    .from('usage_records')
+    .select('*')
+    .eq('user_id', userId)
+    .gte('timestamp', startDate.toISOString())
+    .lte('timestamp', endDate.toISOString())
+    .order('timestamp', { ascending: false });
+
+  if (error) throw error;
+  return data;
+};
+
+export const getUsageSummary = async (userId: string) => {
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+  const { data, error } = await supabase
+    .from('usage_records')
+    .select('gpu_type, hours_used, compute_units, cost_usd')
+    .eq('user_id', userId)
+    .gte('timestamp', startOfMonth.toISOString());
+
+  if (error) throw error;
+
+  const summary = {
+    totalHours: 0,
+    totalCost: 0,
+    totalComputeUnits: 0,
+    byGpuType: {} as Record<string, { hours: number; cost: number; count: number }>
+  };
+
+  data?.forEach(record => {
+    summary.totalHours += record.hours_used;
+    summary.totalCost += record.cost_usd;
+    summary.totalComputeUnits += record.compute_units;
+
+    if (!summary.byGpuType[record.gpu_type]) {
+      summary.byGpuType[record.gpu_type] = { hours: 0, cost: 0, count: 0 };
+    }
+    summary.byGpuType[record.gpu_type].hours += record.hours_used;
+    summary.byGpuType[record.gpu_type].cost += record.cost_usd;
+    summary.byGpuType[record.gpu_type].count++;
+  });
+
+  return summary;
+};
+
+export const getMonthlySpending = async (userId: string, months: number = 6) => {
+  const now = new Date();
+  const startDate = new Date(now.getFullYear(), now.getMonth() - months + 1, 1);
+
+  const { data, error } = await supabase
+    .from('usage_records')
+    .select('cost_usd, timestamp')
+    .eq('user_id', userId)
+    .gte('timestamp', startDate.toISOString())
+    .order('timestamp', { ascending: true });
+
+  if (error) throw error;
+
+  // Group by month
+  const monthlySpending: Record<string, number> = {};
+
+  data?.forEach(record => {
+    const date = new Date(record.timestamp);
+    const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+
+    if (!monthlySpending[monthKey]) {
+      monthlySpending[monthKey] = 0;
+    }
+    monthlySpending[monthKey] += record.cost_usd;
+  });
+
+  return Object.entries(monthlySpending).map(([month, cost]) => ({
+    month,
+    cost
+  }));
+};
+
+export const getGPUUtilization = async (userId: string) => {
+  const { data, error } = await supabase
+    .from('usage_records')
+    .select('gpu_type, hours_used')
+    .eq('user_id', userId);
+
+  if (error) throw error;
+
+  const utilization: Record<string, number> = {};
+
+  data?.forEach(record => {
+    if (!utilization[record.gpu_type]) {
+      utilization[record.gpu_type] = 0;
+    }
+    utilization[record.gpu_type] += record.hours_used;
+  });
+
+  return utilization;
+};
+
+// Save usage record to database
+export const saveUsageRecord = async (record: Omit<UsageRecord, 'id'>) => {
+  const { data, error } = await supabase
+    .from('usage_records')
+    .insert([record])
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
 };

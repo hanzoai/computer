@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { submitRFQ } from '../lib/supabase';
+import { sendRFQConfirmationClient, generateId, formatDate } from '../lib/email-client';
+import type { RFQData } from '../lib/email';
 
 interface RFQFormData {
   // Company Information
@@ -116,6 +118,31 @@ const RequestQuote: React.FC = () => {
         use_case: formData.useCase,
         budget_range: formData.budgetRange || undefined,
         additional_requirements: formData.additionalRequirements || undefined,
+      });
+
+      // Send email notifications
+      const rfqNumber = generateId();
+      const rfqEmailData: RFQData = {
+        rfqNumber: rfqNumber,
+        customerName: formData.name,
+        customerEmail: formData.email,
+        company: formData.company,
+        gpuModel: formData.gpuType,
+        quantity: formData.quantity,
+        duration: formData.duration === 'one-time' ? 'One-time purchase' :
+                  formData.duration === 'monthly' ? 'Monthly lease' :
+                  formData.duration === '6-month' ? '6-month lease' :
+                  'Annual lease',
+        useCase: formData.useCase,
+        message: formData.additionalRequirements,
+        submittedAt: formatDate(new Date())
+      };
+
+      // Send confirmation email (non-blocking)
+      sendRFQConfirmationClient(rfqEmailData).then(result => {
+        if (!result.success) {
+          console.error('Failed to send email:', result.error);
+        }
       });
 
       setSubmitStatus('success');

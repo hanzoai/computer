@@ -13,8 +13,39 @@ import {
   ExclamationCircleIcon,
   PaperAirplaneIcon,
   EyeIcon,
-  DocumentPlusIcon
+  DocumentPlusIcon,
+  ArrowUpIcon,
+  ArrowDownIcon,
+  CalendarIcon,
+  ArrowPathIcon,
+  ArrowDownTrayIcon,
+  ChartPieIcon
 } from '@heroicons/react/24/outline';
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  AreaChart,
+  Area,
+  ComposedChart,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  Radar,
+  Funnel as RechartsFunction,
+  FunnelChart
+} from 'recharts';
 import {
   supabase,
   checkAdminRole,
@@ -29,6 +60,25 @@ import {
   type ClusterRequest,
   type Quote
 } from '../lib/supabase';
+import {
+  getRevenueData,
+  getConversionFunnel,
+  getCustomerGrowth,
+  getGPUTypeBreakdown,
+  getTopCustomers,
+  getQuotePerformance,
+  getAverageDealValue,
+  getKeyMetrics,
+  getResponseTimeMetrics,
+  type RevenueDataPoint,
+  type ConversionFunnel,
+  type CustomerGrowth,
+  type GPUTypeBreakdown,
+  type TopCustomer,
+  type QuotePerformance,
+  type MetricCard
+} from '../lib/adminAnalytics';
+import { format, subDays, startOfMonth, endOfMonth } from 'date-fns';
 
 interface QuoteLineItem {
   description: string;
@@ -97,16 +147,70 @@ const StatusBadge: React.FC<{ status: string }> = ({ status }) => {
   );
 };
 
+const MetricCard: React.FC<MetricCard> = ({ title, value, change, changeType, prefix, suffix }) => {
+  const isPositive = changeType === 'increase';
+  const isNeutral = changeType === 'neutral';
+
+  return (
+    <div className="bg-gray-800/30 backdrop-blur-sm rounded-lg p-6 border border-gray-700/50">
+      <h3 className="text-gray-400 text-sm font-medium mb-2">{title}</h3>
+      <p className="text-3xl font-bold text-white">
+        {prefix}{typeof value === 'number' ? value.toLocaleString() : value}{suffix}
+      </p>
+      {!isNeutral && (
+        <div className={`flex items-center gap-1 mt-2 ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
+          {isPositive ? <ArrowUpIcon className="w-4 h-4" /> : <ArrowDownIcon className="w-4 h-4" />}
+          <span className="text-sm">{Math.abs(change).toFixed(1)}%</span>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Custom tooltip for charts
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-gray-900/95 backdrop-blur-sm border border-gray-700 rounded-lg p-3">
+        <p className="text-gray-400 text-xs mb-1">{label}</p>
+        {payload.map((entry: any, index: number) => (
+          <p key={index} className="text-white text-sm font-semibold">
+            {entry.name}: ${entry.value.toLocaleString()}
+          </p>
+        ))}
+      </div>
+    );
+  }
+  return null;
+};
+
+// Chart colors
+const CHART_COLORS = ['#9333EA', '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#EC4899', '#8B5CF6'];
+
 const AdminDashboard: React.FC = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'stats' | 'rfqs' | 'clusters' | 'quotes' | 'builder'>('stats');
+  const [activeTab, setActiveTab] = useState<'analytics' | 'rfqs' | 'clusters' | 'quotes' | 'builder'>('analytics');
   const [isLoading, setIsLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState(new Date());
 
   // Data states
   const [rfqs, setRFQs] = useState<RFQ[]>([]);
   const [clusterRequests, setClusterRequests] = useState<ClusterRequest[]>([]);
   const [quotes, setQuotes] = useState<Quote[]>([]);
+
+  // Analytics states
+  const [keyMetrics, setKeyMetrics] = useState<MetricCard[]>([]);
+  const [revenueData, setRevenueData] = useState<RevenueDataPoint[]>([]);
+  const [conversionFunnel, setConversionFunnel] = useState<ConversionFunnel[]>([]);
+  const [customerGrowth, setCustomerGrowth] = useState<CustomerGrowth[]>([]);
+  const [gpuBreakdown, setGpuBreakdown] = useState<GPUTypeBreakdown[]>([]);
+  const [topCustomers, setTopCustomers] = useState<TopCustomer[]>([]);
+  const [quotePerformance, setQuotePerformance] = useState<QuotePerformance[]>([]);
+  const [avgDealValue, setAvgDealValue] = useState<{ overall: number; byGPUType: Map<string, number> }>({ overall: 0, byGPUType: new Map() });
+  const [responseTime, setResponseTime] = useState<{ avgResponseTime: number; distribution: Map<string, number> }>({ avgResponseTime: 0, distribution: new Map() });
 
   // Filter states
   const [rfqFilter, setRfqFilter] = useState<string>('all');
@@ -124,10 +228,6 @@ const AdminDashboard: React.FC = () => {
   const [quoteValidDays, setQuoteValidDays] = useState(30);
   const [paymentTerms, setPaymentTerms] = useState('Net 30');
 
-  // Modal states
-  const [showQuoteModal, setShowQuoteModal] = useState(false);
-  const [selectedItemForQuote, setSelectedItemForQuote] = useState<RFQ | ClusterRequest | null>(null);
-
   useEffect(() => {
     checkAuth();
   }, []);
@@ -135,8 +235,20 @@ const AdminDashboard: React.FC = () => {
   useEffect(() => {
     if (isAdmin) {
       loadData();
+      loadAnalytics();
     }
-  }, [isAdmin, rfqFilter, clusterFilter, quoteFilter]);
+  }, [isAdmin, rfqFilter, clusterFilter, quoteFilter, dateRange]);
+
+  // Auto-refresh every 5 minutes
+  useEffect(() => {
+    if (isAdmin) {
+      const interval = setInterval(() => {
+        loadAnalytics();
+        setLastUpdated(new Date());
+      }, 5 * 60 * 1000);
+      return () => clearInterval(interval);
+    }
+  }, [isAdmin, dateRange]);
 
   const checkAuth = async () => {
     try {
@@ -176,6 +288,91 @@ const AdminDashboard: React.FC = () => {
     } catch (error) {
       console.error('Error loading data:', error);
     }
+  };
+
+  const loadAnalytics = async () => {
+    try {
+      setIsRefreshing(true);
+
+      const endDate = new Date();
+      let startDate: Date;
+      let groupBy: 'day' | 'week' | 'month' = 'day';
+
+      switch(dateRange) {
+        case '7d':
+          startDate = subDays(endDate, 7);
+          groupBy = 'day';
+          break;
+        case '30d':
+          startDate = subDays(endDate, 30);
+          groupBy = 'day';
+          break;
+        case '90d':
+          startDate = subDays(endDate, 90);
+          groupBy = 'week';
+          break;
+        case '1y':
+          startDate = subDays(endDate, 365);
+          groupBy = 'month';
+          break;
+      }
+
+      const [
+        metrics,
+        revenue,
+        funnel,
+        growth,
+        breakdown,
+        customers,
+        performance,
+        dealValue,
+        responseMetrics
+      ] = await Promise.all([
+        getKeyMetrics(dateRange),
+        getRevenueData(startDate, endDate, groupBy),
+        getConversionFunnel(startDate, endDate),
+        getCustomerGrowth(startDate, endDate),
+        getGPUTypeBreakdown(startDate, endDate),
+        getTopCustomers(10),
+        getQuotePerformance(startDate, endDate),
+        getAverageDealValue(startDate, endDate),
+        getResponseTimeMetrics(startDate, endDate)
+      ]);
+
+      setKeyMetrics(metrics);
+      setRevenueData(revenue);
+      setConversionFunnel(funnel);
+      setCustomerGrowth(growth);
+      setGpuBreakdown(breakdown);
+      setTopCustomers(customers);
+      setQuotePerformance(performance);
+      setAvgDealValue(dealValue);
+      setResponseTime(responseMetrics);
+      setLastUpdated(new Date());
+    } catch (error) {
+      console.error('Error loading analytics:', error);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
+  const handleManualRefresh = () => {
+    loadData();
+    loadAnalytics();
+  };
+
+  const handleExportData = () => {
+    // Convert data to CSV format
+    const csvContent = `Date,Revenue,Orders
+${revenueData.map(d => `${d.date},${d.revenue},${d.orders}`).join('\n')}`;
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `hanzo-analytics-${format(new Date(), 'yyyy-MM-dd')}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
   };
 
   const handleStatusUpdate = async (type: 'rfq' | 'cluster', id: string, newStatus: string) => {
@@ -255,33 +452,14 @@ const AdminDashboard: React.FC = () => {
       setQuoteItems([{ description: '', quantity: 1, unitPrice: 0, total: 0 }]);
       setQuoteTax(0);
       setQuoteNotes('');
-      setShowQuoteModal(false);
 
       // Reload data
       await loadData();
+      await loadAnalytics();
     } catch (error) {
       console.error('Error creating quote:', error);
     }
   };
-
-  const getStatistics = () => {
-    const stats = {
-      totalRFQs: rfqs.length,
-      pendingRFQs: rfqs.filter(r => r.status === 'pending').length,
-      quotedRFQs: rfqs.filter(r => r.status === 'quoted').length,
-      totalClusters: clusterRequests.length,
-      pendingClusters: clusterRequests.filter(c => c.status === 'pending').length,
-      quotedClusters: clusterRequests.filter(c => c.status === 'quoted').length,
-      totalQuotes: quotes.length,
-      sentQuotes: quotes.filter(q => q.status === 'sent').length,
-      acceptedQuotes: quotes.filter(q => q.status === 'accepted').length,
-      totalRevenue: quotes.filter(q => q.status === 'accepted').reduce((sum, q) => sum + q.total, 0),
-      conversionRate: quotes.length > 0 ? (quotes.filter(q => q.status === 'accepted').length / quotes.length * 100).toFixed(1) : '0',
-    };
-    return stats;
-  };
-
-  const stats = getStatistics();
 
   if (isLoading) {
     return (
@@ -303,20 +481,49 @@ const AdminDashboard: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400 mb-2">
-            Admin Dashboard
-          </h1>
-          <p className="text-gray-400">Manage RFQs, Cluster Requests, and Quotes</p>
+        <div className="mb-8 flex justify-between items-start">
+          <div>
+            <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400 mb-2">
+              Admin Dashboard
+            </h1>
+            <p className="text-gray-400">Manage RFQs, Cluster Requests, and Quotes</p>
+          </div>
+
+          {activeTab === 'analytics' && (
+            <div className="flex items-center gap-4">
+              <div className="text-xs text-gray-500">
+                Last updated: {format(lastUpdated, 'HH:mm:ss')}
+              </div>
+              <button
+                onClick={handleManualRefresh}
+                disabled={isRefreshing}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
+                  isRefreshing
+                    ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                    : 'bg-gray-800 text-white hover:bg-gray-700'
+                }`}
+              >
+                <ArrowPathIcon className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                Refresh
+              </button>
+              <button
+                onClick={handleExportData}
+                className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-all"
+              >
+                <ArrowDownTrayIcon className="w-4 h-4" />
+                Export CSV
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Tab Navigation */}
         <div className="flex flex-wrap gap-4 mb-8">
           <TabButton
-            active={activeTab === 'stats'}
-            onClick={() => setActiveTab('stats')}
-            icon={<ChartBarIcon className="w-5 h-5" />}
-            label="Statistics"
+            active={activeTab === 'analytics'}
+            onClick={() => setActiveTab('analytics')}
+            icon={<ChartPieIcon className="w-5 h-5" />}
+            label="Analytics"
           />
           <TabButton
             active={activeTab === 'rfqs'}
@@ -349,49 +556,209 @@ const AdminDashboard: React.FC = () => {
 
         {/* Content */}
         <div className="bg-gray-800/30 backdrop-blur-sm rounded-xl border border-gray-700/50 p-6">
-          {/* Statistics Tab */}
-          {activeTab === 'stats' && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-gradient-to-br from-yellow-600/20 to-orange-600/20 rounded-lg p-6 border border-yellow-500/20">
-                <h3 className="text-yellow-400 text-sm font-medium mb-2">Total RFQs</h3>
-                <p className="text-3xl font-bold text-white">{stats.totalRFQs}</p>
-                <p className="text-yellow-400/60 text-sm mt-2">{stats.pendingRFQs} pending</p>
+          {/* Analytics Tab */}
+          {activeTab === 'analytics' && (
+            <div className="space-y-8">
+              {/* Date Range Selector */}
+              <div className="flex gap-2">
+                {(['7d', '30d', '90d', '1y'] as const).map((range) => (
+                  <button
+                    key={range}
+                    onClick={() => setDateRange(range)}
+                    className={`px-4 py-2 rounded-lg transition-all ${
+                      dateRange === range
+                        ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white'
+                        : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                    }`}
+                  >
+                    {range === '7d' ? '7 Days' : range === '30d' ? '30 Days' : range === '90d' ? '90 Days' : '1 Year'}
+                  </button>
+                ))}
               </div>
 
-              <div className="bg-gradient-to-br from-blue-600/20 to-cyan-600/20 rounded-lg p-6 border border-blue-500/20">
-                <h3 className="text-blue-400 text-sm font-medium mb-2">Cluster Requests</h3>
-                <p className="text-3xl font-bold text-white">{stats.totalClusters}</p>
-                <p className="text-blue-400/60 text-sm mt-2">{stats.pendingClusters} pending</p>
+              {/* Key Metrics */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {keyMetrics.map((metric, index) => (
+                  <MetricCard key={index} {...metric} />
+                ))}
               </div>
 
-              <div className="bg-gradient-to-br from-purple-600/20 to-pink-600/20 rounded-lg p-6 border border-purple-500/20">
-                <h3 className="text-purple-400 text-sm font-medium mb-2">Total Quotes</h3>
-                <p className="text-3xl font-bold text-white">{stats.totalQuotes}</p>
-                <p className="text-purple-400/60 text-sm mt-2">{stats.acceptedQuotes} accepted</p>
+              {/* Charts Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Revenue Over Time */}
+                <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700/50">
+                  <h3 className="text-lg font-semibold text-white mb-4">Revenue Over Time</h3>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <AreaChart data={revenueData}>
+                      <defs>
+                        <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#9333EA" stopOpacity={0.8}/>
+                          <stop offset="95%" stopColor="#9333EA" stopOpacity={0}/>
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                      <XAxis dataKey="date" stroke="#9CA3AF" />
+                      <YAxis stroke="#9CA3AF" />
+                      <Tooltip content={<CustomTooltip />} />
+                      <Area
+                        type="monotone"
+                        dataKey="revenue"
+                        stroke="#9333EA"
+                        fillOpacity={1}
+                        fill="url(#colorRevenue)"
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+
+                {/* GPU Type Breakdown */}
+                <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700/50">
+                  <h3 className="text-lg font-semibold text-white mb-4">Revenue by GPU Type</h3>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={gpuBreakdown}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={(entry) => `${entry.gpuType}: ${entry.percentage.toFixed(1)}%`}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="revenue"
+                      >
+                        {gpuBreakdown.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+
+                {/* Conversion Funnel */}
+                <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700/50">
+                  <h3 className="text-lg font-semibold text-white mb-4">Conversion Funnel</h3>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={conversionFunnel} layout="horizontal">
+                      <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                      <XAxis type="number" stroke="#9CA3AF" />
+                      <YAxis dataKey="stage" type="category" stroke="#9CA3AF" width={100} />
+                      <Tooltip />
+                      <Bar dataKey="value" fill="#3B82F6">
+                        {conversionFunnel.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+
+                {/* Customer Growth */}
+                <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700/50">
+                  <h3 className="text-lg font-semibold text-white mb-4">Customer Growth</h3>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <ComposedChart data={customerGrowth}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                      <XAxis dataKey="date" stroke="#9CA3AF" />
+                      <YAxis yAxisId="left" stroke="#9CA3AF" />
+                      <YAxis yAxisId="right" orientation="right" stroke="#9CA3AF" />
+                      <Tooltip content={<CustomTooltip />} />
+                      <Legend />
+                      <Bar yAxisId="left" dataKey="newCustomers" fill="#10B981" name="New Customers" />
+                      <Line
+                        yAxisId="right"
+                        type="monotone"
+                        dataKey="totalCustomers"
+                        stroke="#F59E0B"
+                        name="Total Customers"
+                        strokeWidth={2}
+                      />
+                    </ComposedChart>
+                  </ResponsiveContainer>
+                </div>
+
+                {/* Quote Performance */}
+                <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700/50">
+                  <h3 className="text-lg font-semibold text-white mb-4">Quote Performance</h3>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={quotePerformance}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                      <XAxis dataKey="date" stroke="#9CA3AF" />
+                      <YAxis stroke="#9CA3AF" />
+                      <Tooltip />
+                      <Legend />
+                      <Line type="monotone" dataKey="sent" stroke="#3B82F6" name="Sent" strokeWidth={2} />
+                      <Line type="monotone" dataKey="accepted" stroke="#10B981" name="Accepted" strokeWidth={2} />
+                      <Line type="monotone" dataKey="rejected" stroke="#EF4444" name="Rejected" strokeWidth={2} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+
+                {/* Average Deal Value by GPU Type */}
+                <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700/50">
+                  <h3 className="text-lg font-semibold text-white mb-4">Average Deal Value by GPU Type</h3>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={Array.from(avgDealValue.byGPUType.entries()).map(([gpu, value]) => ({ gpu, value }))}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                      <XAxis dataKey="gpu" stroke="#9CA3AF" />
+                      <YAxis stroke="#9CA3AF" />
+                      <Tooltip />
+                      <Bar dataKey="value" fill="#EC4899" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
 
-              <div className="bg-gradient-to-br from-green-600/20 to-emerald-600/20 rounded-lg p-6 border border-green-500/20">
-                <h3 className="text-green-400 text-sm font-medium mb-2">Conversion Rate</h3>
-                <p className="text-3xl font-bold text-white">{stats.conversionRate}%</p>
-                <p className="text-green-400/60 text-sm mt-2">Quote to order</p>
+              {/* Top Customers Table */}
+              <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700/50">
+                <h3 className="text-lg font-semibold text-white mb-4">Top Customers</h3>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-gray-700">
+                        <th className="text-left py-3 px-4 text-gray-400 font-medium">Rank</th>
+                        <th className="text-left py-3 px-4 text-gray-400 font-medium">Customer</th>
+                        <th className="text-left py-3 px-4 text-gray-400 font-medium">Email</th>
+                        <th className="text-left py-3 px-4 text-gray-400 font-medium">Revenue</th>
+                        <th className="text-left py-3 px-4 text-gray-400 font-medium">Orders</th>
+                        <th className="text-left py-3 px-4 text-gray-400 font-medium">Joined</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {topCustomers.map((customer, index) => (
+                        <tr key={customer.id} className="border-b border-gray-700/50 hover:bg-gray-700/20">
+                          <td className="py-3 px-4 text-white">#{index + 1}</td>
+                          <td className="py-3 px-4 text-white">{customer.name}</td>
+                          <td className="py-3 px-4 text-gray-300">{customer.email}</td>
+                          <td className="py-3 px-4 text-green-400 font-semibold">
+                            ${customer.revenue.toLocaleString()}
+                          </td>
+                          <td className="py-3 px-4 text-gray-300">{customer.orders}</td>
+                          <td className="py-3 px-4 text-gray-400 text-sm">
+                            {new Date(customer.joinDate).toLocaleDateString()}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
 
-              <div className="bg-gradient-to-br from-indigo-600/20 to-blue-600/20 rounded-lg p-6 border border-indigo-500/20 md:col-span-2">
-                <h3 className="text-indigo-400 text-sm font-medium mb-2">Total Revenue</h3>
-                <p className="text-3xl font-bold text-white">${stats.totalRevenue.toLocaleString()}</p>
-                <p className="text-indigo-400/60 text-sm mt-2">From accepted quotes</p>
-              </div>
-
-              <div className="bg-gradient-to-br from-gray-600/20 to-gray-700/20 rounded-lg p-6 border border-gray-500/20">
-                <h3 className="text-gray-400 text-sm font-medium mb-2">RFQ Quotes</h3>
-                <p className="text-3xl font-bold text-white">{stats.quotedRFQs}</p>
-                <p className="text-gray-400/60 text-sm mt-2">Quotes sent</p>
-              </div>
-
-              <div className="bg-gradient-to-br from-gray-600/20 to-gray-700/20 rounded-lg p-6 border border-gray-500/20">
-                <h3 className="text-gray-400 text-sm font-medium mb-2">Cluster Quotes</h3>
-                <p className="text-3xl font-bold text-white">{stats.quotedClusters}</p>
-                <p className="text-gray-400/60 text-sm mt-2">Quotes sent</p>
+              {/* Response Time Distribution */}
+              <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700/50">
+                <h3 className="text-lg font-semibold text-white mb-4">Response Time Distribution</h3>
+                <div className="mb-4">
+                  <p className="text-gray-400">Average Response Time: <span className="text-white font-semibold">{responseTime.avgResponseTime.toFixed(1)} hours</span></p>
+                </div>
+                <ResponsiveContainer width="100%" height={200}>
+                  <BarChart data={Array.from(responseTime.distribution.entries()).map(([range, count]) => ({ range, count }))}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                    <XAxis dataKey="range" stroke="#9CA3AF" />
+                    <YAxis stroke="#9CA3AF" />
+                    <Tooltip />
+                    <Bar dataKey="count" fill="#8B5CF6" />
+                  </BarChart>
+                </ResponsiveContainer>
               </div>
             </div>
           )}
