@@ -20,6 +20,7 @@ import CloudPricing from './components/CloudPricing';
 import SearchModal from './components/SearchModal';
 import Cart from './src/pages/Cart';
 import Checkout from './src/pages/Checkout';
+import CheckoutSuccess from './src/pages/CheckoutSuccess';
 import Account from './src/pages/Account';
 import DGXSpark from './src/pages/DGXSpark';
 import TermsOfService from './src/pages/TermsOfService';
@@ -32,6 +33,7 @@ import Dashboard from './src/pages/Dashboard';
 import SignIn from './src/pages/SignIn';
 import SignUp from './src/pages/SignUp';
 import AdminDashboard from './src/pages/AdminDashboard';
+import Analytics from './src/pages/Analytics';
 
 const HomePage: React.FC<{ onSelectProduct: (productName: string) => void }> = ({ onSelectProduct }) => {
   return (
@@ -94,8 +96,10 @@ const App: React.FC = () => {
               <Route path="/dgx-spark" element={<DGXSpark />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />
+              <Route path="/checkout/success" element={<CheckoutSuccess />} />
               <Route path="/account" element={<Account />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/analytics" element={<Analytics />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/signin" element={<SignIn />} />
               <Route path="/signup" element={<SignUp />} />

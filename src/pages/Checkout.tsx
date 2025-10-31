@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { useCart } from '../context/CartContext';
+import { createPaymentIntent, createSubscription, formatAmount, handleStripeError } from '../lib/stripe';
+import { supabase } from '../lib/supabase';
 
-// Replace with your actual Stripe publishable key
+// Initialize Stripe with publishable key
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_YOUR_KEY_HERE');
 
 const CheckoutForm: React.FC = () => {
@@ -14,6 +16,8 @@ const CheckoutForm: React.FC = () => {
   const { getStripePurchasableItems, clearCart } = useCart();
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [clientSecret, setClientSecret] = useState<string>('');
+  const [paymentIntentId, setPaymentIntentId] = useState<string>('');
   const [formData, setFormData] = useState({
     email: '',
     name: '',
@@ -26,6 +30,42 @@ const CheckoutForm: React.FC = () => {
 
   const items = getStripePurchasableItems();
   const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const hasSubscriptions = items.some(item => item.subscriptionType === 'monthly');
+
+  // Create payment intent on component mount
+  useEffect(() => {
+    if (items.length === 0) return;
+
+    const initializePayment = async () => {
+      try {
+        // For now, handle all as one-time payments
+        // In production, you'd separate subscriptions
+        const metadata = {
+          items: JSON.stringify(items.map(item => ({
+            id: item.id,
+            name: item.name,
+            quantity: item.quantity,
+            price: item.price,
+            subscriptionType: item.subscriptionType
+          })))
+        };
+
+        const { clientSecret: secret, paymentIntentId: intentId } = await createPaymentIntent(
+          totalPrice,
+          'usd',
+          metadata
+        );
+
+        setClientSecret(secret);
+        setPaymentIntentId(intentId);
+      } catch (err) {
+        console.error('Error creating payment intent:', err);
+        setError('Failed to initialize payment. Please try again.');
+      }
+    };
+
+    initializePayment();
+  }, [items, totalPrice]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -33,8 +73,8 @@ const CheckoutForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!stripe || !elements) {
+
+    if (!stripe || !elements || !clientSecret) {
       return;
     }
 
@@ -48,60 +88,77 @@ const CheckoutForm: React.FC = () => {
 
     try {
       const cardElement = elements.getElement(CardElement);
-      
+
       if (!cardElement) {
         throw new Error('Card element not found');
       }
 
-      // Create payment method
-      const { error: paymentError, paymentMethod } = await stripe.createPaymentMethod({
-        type: 'card',
-        card: cardElement,
-        billing_details: {
-          name: formData.name,
-          email: formData.email,
-          address: {
-            line1: formData.address,
-            city: formData.city,
-            state: formData.state,
-            postal_code: formData.zip,
-            country: formData.country,
+      // Confirm the payment with Stripe
+      const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: cardElement,
+          billing_details: {
+            name: formData.name,
+            email: formData.email,
+            address: {
+              line1: formData.address,
+              city: formData.city,
+              state: formData.state,
+              postal_code: formData.zip,
+              country: formData.country,
+            },
           },
         },
       });
 
-      if (paymentError) {
-        throw new Error(paymentError.message);
+      if (confirmError) {
+        throw new Error(handleStripeError(confirmError));
       }
 
-      // Here you would typically:
-      // 1. Send paymentMethod.id to your backend
-      // 2. Create a payment intent on the server
-      // 3. Confirm the payment
-      // For demo purposes, we'll simulate success
-      
-      console.log('Payment Method:', paymentMethod);
-      console.log('Order:', { items, totalPrice, customer: formData });
+      if (paymentIntent?.status === 'succeeded') {
+        // Create order in Supabase
+        const { data: userData } = await supabase.auth.getUser();
 
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
+        const orderData = {
+          user_id: userData?.user?.id || null,
+          payment_intent_id: paymentIntentId,
+          amount: totalPrice,
+          currency: 'usd',
+          status: 'completed',
+          items: items,
+          customer_info: formData,
+          created_at: new Date().toISOString(),
+        };
 
-      // Store order in localStorage for demo
-      const order = {
-        id: `ORD-${Date.now()}`,
-        date: new Date().toISOString(),
-        items,
-        total: totalPrice,
-        customer: formData,
-        status: 'completed',
-      };
+        // Try to save to Supabase, but don't fail if it doesn't work
+        try {
+          const { error: orderError } = await supabase
+            .from('orders')
+            .insert([orderData]);
 
-      const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-      orders.push(order);
-      localStorage.setItem('orders', JSON.stringify(orders));
+          if (orderError) {
+            console.error('Error saving order to database:', orderError);
+          }
+        } catch (dbError) {
+          console.error('Database error:', dbError);
+        }
 
-      clearCart();
-      navigate('/account?order_placed=true');
+        // Also store in localStorage as fallback
+        const localOrder = {
+          id: `ORD-${Date.now()}`,
+          ...orderData,
+        };
+
+        const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+        orders.push(localOrder);
+        localStorage.setItem('orders', JSON.stringify(orders));
+
+        // Clear cart and redirect to success page
+        clearCart();
+        navigate(`/checkout/success?payment_intent=${paymentIntentId}`);
+      } else {
+        throw new Error('Payment was not successful. Please try again.');
+      }
     } catch (err: any) {
       setError(err.message || 'An error occurred processing your payment');
       setProcessing(false);
@@ -287,9 +344,21 @@ const CheckoutForm: React.FC = () => {
                     </div>
                   )}
 
+                  {!clientSecret && items.length > 0 && (
+                    <div className="p-4 bg-primary/10 border border-primary/30 rounded-lg mb-4">
+                      <div className="flex items-center gap-2">
+                        <svg className="animate-spin h-5 w-5 text-primary" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                        </svg>
+                        <p className="text-sm text-gray-300">Initializing secure payment...</p>
+                      </div>
+                    </div>
+                  )}
+
                   <button
                     type="submit"
-                    disabled={!stripe || processing}
+                    disabled={!stripe || processing || !clientSecret}
                     className="w-full bg-primary text-black font-bold py-4 px-6 rounded-lg hover:bg-primary-dark transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     {processing ? (
