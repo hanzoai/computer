@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import HardwareSpec from '../../components/HardwareSpec';
 import ImageGallery from '../../components/ImageGallery';
 import FeaturesComponent from '../../components/Features';
+import IndustrySolutions from '../../components/IndustrySolutions';
 
 const FeaturesPage: React.FC = () => {
   const handleSelectProduct = (productId: string) => {
@@ -68,6 +69,9 @@ const FeaturesPage: React.FC = () => {
 
       {/* Image Gallery */}
       <ImageGallery />
+
+      {/* Industry Solutions */}
+      <IndustrySolutions />
 
       {/* Why Choose Hanzo */}
       <section className="py-20 bg-dark-bg">

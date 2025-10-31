@@ -78,14 +78,14 @@ const Header: React.FC<HeaderProps> = ({ onOpenSearch }) => {
 
   const productLinks = [
     { name: 'DGX Spark', description: '$4,000 - Dedicated DGX Instance', href: '/#pricing' },
-    { name: 'GPU On-Demand', description: 'H100 & H200 GPUs', href: '/#pricing' },
-    { name: 'Enterprise & Resale', description: 'Custom SuperPODs', href: '/#pricing' },
+    { name: 'RTX PRO 6000', description: '$8,357 - Professional Blackwell GPU', href: '/rtx-pro-6000' },
+    { name: 'Blackwell Systems', description: 'B200, B100, GB300 NVL72', href: '/#pricing' },
+    { name: 'Clusters & SuperPODs', description: 'Enterprise AI Infrastructure', href: '/clusters' },
   ];
 
   const navLinks = [
     { href: '/features', label: 'Hardware' },
     { href: '/solutions', label: 'Solutions' },
-    { href: '/clusters', label: 'Clusters' },
   ];
 
   return (
