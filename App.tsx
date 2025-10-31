@@ -26,6 +26,8 @@ import TermsOfService from './src/pages/TermsOfService';
 import PrivacyPolicy from './src/pages/PrivacyPolicy';
 import RequestQuote from './src/pages/RequestQuote';
 import Clusters from './src/pages/Clusters';
+import FeaturesPage from './src/pages/Features';
+import Solutions from './src/pages/Solutions';
 
 const HomePage: React.FC<{ onSelectProduct: (productName: string) => void }> = ({ onSelectProduct }) => {
   return (
@@ -34,15 +36,7 @@ const HomePage: React.FC<{ onSelectProduct: (productName: string) => void }> = (
       <DGXSparkHighlight />
       <Partners />
       <Features />
-      <HardwareSpec onSelectProduct={onSelectProduct} />
-      <ImageGallery />
-      <UseCases />
-      <Testimonials />
-      <WhyBuyHardware />
-      <TrustSecurity />
       <Pricing />
-      <CloudPricing />
-      <FAQ />
       <CallToAction />
     </>
   );
@@ -99,6 +93,8 @@ const App: React.FC = () => {
               <Route path="/account" element={<Account />} />
               <Route path="/request-quote" element={<RequestQuote />} />
               <Route path="/clusters" element={<Clusters />} />
+              <Route path="/features" element={<FeaturesPage />} />
+              <Route path="/solutions" element={<Solutions />} />
               <Route path="/terms" element={<TermsOfService />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="*" element={<Navigate to="/" replace />} />
