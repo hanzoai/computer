@@ -123,16 +123,30 @@ const CloudPricing: React.FC = () => {
         {/* Header */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center space-x-2 bg-secondary/10 border border-secondary/30 rounded-full px-4 py-2 mb-4">
-            <svg className="w-5 h-5 text-secondary" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
+            <svg className="w-5 h-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
             </svg>
-            <span className="text-secondary font-semibold">NVIDIA GPU Cloud Instances</span>
+            <span className="text-secondary font-semibold">Need Cloud Instead?</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Enterprise-Grade GPU Infrastructure
+            Explore Hanzo Cloud for On-Demand GPU Access
           </h2>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-8">
-            One of the largest selections of NVIDIA GPUs available in the cloud. Powered by the latest Blackwell and Hopper architectures.
+          <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-4">
+            While we recommend <strong className="text-white">buying your own hardware</strong> for the best value and control, Hanzo Cloud offers flexible, pay-as-you-go GPU instances when you need them.
+          </p>
+          <a
+            href="https://hanzo.ai"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center px-8 py-4 bg-secondary text-white font-bold rounded-lg hover:bg-secondary/90 transition-all duration-300 transform hover:scale-105 mb-8"
+          >
+            Visit Hanzo Cloud
+            <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+          <p className="text-sm text-gray-500 max-w-2xl mx-auto mb-8">
+            Reference pricing shown below for cloud instances. For detailed cloud pricing and instant deployment, visit Hanzo.AI.
           </p>
 
           {/* Period Selector */}
@@ -242,15 +256,18 @@ const CloudPricing: React.FC = () => {
                       {getSavings(instance)}
                     </div>
                   )}
-                  <button
-                    className={`mt-3 px-6 py-2 rounded-lg font-semibold transition-all duration-300 ${
+                  <a
+                    href="https://hanzo.ai"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`mt-3 inline-block px-6 py-2 rounded-lg font-semibold transition-all duration-300 text-center ${
                       instance.monthlyPrice
-                        ? 'bg-primary text-black hover:bg-primary-dark'
-                        : 'border border-primary text-primary hover:bg-primary/10'
+                        ? 'bg-secondary text-white hover:bg-secondary/90'
+                        : 'border border-secondary text-secondary hover:bg-secondary/10'
                     }`}
                   >
-                    {instance.monthlyPrice ? 'Get Started' : 'Contact Sales'}
-                  </button>
+                    {instance.monthlyPrice ? 'Get Cloud Access' : 'Contact Sales'}
+                  </a>
                 </div>
               </div>
             ))}

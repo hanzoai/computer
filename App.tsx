@@ -14,6 +14,8 @@ import ImageGallery from './components/ImageGallery';
 import Testimonials from './components/Testimonials';
 import FAQ from './components/FAQ';
 import TrustSecurity from './components/TrustSecurity';
+import WhyBuyHardware from './components/WhyBuyHardware';
+import UseCases from './components/UseCases';
 import CloudPricing from './components/CloudPricing';
 import SearchModal from './components/SearchModal';
 import Cart from './src/pages/Cart';
@@ -30,7 +32,9 @@ const HomePage: React.FC<{ onSelectProduct: (productName: string) => void }> = (
       <Features />
       <HardwareSpec onSelectProduct={onSelectProduct} />
       <ImageGallery />
+      <UseCases />
       <Testimonials />
+      <WhyBuyHardware />
       <TrustSecurity />
       <Pricing />
       <CloudPricing />
