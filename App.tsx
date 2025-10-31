@@ -22,6 +22,8 @@ import Cart from './src/pages/Cart';
 import Checkout from './src/pages/Checkout';
 import Account from './src/pages/Account';
 import DGXSpark from './src/pages/DGXSpark';
+import TermsOfService from './src/pages/TermsOfService';
+import PrivacyPolicy from './src/pages/PrivacyPolicy';
 
 const HomePage: React.FC<{ onSelectProduct: (productName: string) => void }> = ({ onSelectProduct }) => {
   return (
@@ -93,6 +95,8 @@ const App: React.FC = () => {
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/account" element={<Account />} />
+              <Route path="/terms" element={<TermsOfService />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
             <Footer />
