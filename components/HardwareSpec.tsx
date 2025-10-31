@@ -3,23 +3,37 @@ import React from 'react';
 
 const hardware = [
     {
-        category: 'The Universal AI System',
-        name: 'NVIDIA DGX H100',
-        description: 'The universal system for all AI workloads. DGX H100 is the foundational block of DGX SuperPODs, providing the power to train massive models at scale.',
-        imageUrl: '/nvidia-dgx-spark-and-dgx-station.jpg',
+        category: 'LATEST: Blackwell Architecture',
+        name: 'NVIDIA B200 GPU',
+        description: 'The latest Blackwell B200 GPU delivers unprecedented AI performance with 192GB HBM3e memory and 2nd-gen Transformer Engine for next-generation AI workloads.',
+        imageUrl: '/nvidia-blackwell-ultra.jpg',
         stats: [
-          { value: '8x', label: 'NVIDIA H100 GPUs' },
-          { value: '640 GB', label: 'Total GPU Memory' },
-          { value: '32 PFLOPS', label: 'FP8 AI Performance' },
-          { value: '2x', label: 'Intel Xeon Platinum CPUs' },
-          { value: '4x', label: 'NVSwitch' },
-          { value: '30TB', label: 'NVMe SSD' },
+            { value: '192 GB', label: 'HBM3e Memory' },
+            { value: '8 TB/s', label: 'Memory Bandwidth' },
+            { value: '9 PFLOPS', label: 'FP4 AI Performance' },
+            { value: 'Blackwell', label: 'Architecture' },
+            { value: '1800 GB/s', label: 'NVLink 5.0' },
+            { value: '2nd Gen', label: 'Transformer Engine' },
         ]
     },
     {
-        category: 'The Generative AI Engine',
+        category: 'LATEST: Blackwell Architecture',
+        name: 'NVIDIA B100 GPU',
+        description: 'Blackwell B100 GPU combines exceptional AI performance with 192GB memory, perfect for training and inference of the largest AI models.',
+        imageUrl: '/nvidia-dgx-spark-and-dgx-station.jpg',
+        stats: [
+            { value: '192 GB', label: 'HBM3e Memory' },
+            { value: '8 TB/s', label: 'Memory Bandwidth' },
+            { value: '7 PFLOPS', label: 'FP4 AI Performance' },
+            { value: 'Blackwell', label: 'Architecture' },
+            { value: '1800 GB/s', label: 'NVLink 5.0' },
+            { value: 'PCIe Gen6', label: 'System Interface' },
+        ]
+    },
+    {
+        category: 'Hopper Architecture',
         name: 'NVIDIA H200 GPU',
-        description: 'The H200 is the first GPU to offer HBM3e, delivering 141GB of memory at 4.8 terabytes per second to handle massive datasets for generative AI and HPC.',
+        description: 'The H200 offers HBM3e with 141GB of memory at 4.8 terabytes per second to handle massive datasets for generative AI and HPC.',
         imageUrl: '/h200-nvl.jpg',
         stats: [
             { value: '141 GB', label: 'HBM3e Memory' },
@@ -31,10 +45,10 @@ const hardware = [
         ]
     },
     {
-        category: 'The AI Workhorse',
+        category: 'Hopper Architecture',
         name: 'NVIDIA H100 GPU',
-        description: 'The NVIDIA H100 Tensor Core GPU delivers unprecedented performance, scalability, and security for every data center, accelerating workloads from enterprise AI to HPC.',
-        imageUrl: '/nvidia-blackwell-ultra.jpg',
+        description: 'The NVIDIA H100 Tensor Core GPU delivers exceptional performance, scalability, and security for data centers, accelerating workloads from enterprise AI to HPC.',
+        imageUrl: '/nvidia-dgx-spark-and-dgx-station.jpg',
         stats: [
             { value: '80 GB', label: 'HBM3 Memory' },
             { value: '3.35 TB/s', label: 'Memory Bandwidth' },

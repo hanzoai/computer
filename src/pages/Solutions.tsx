@@ -4,6 +4,7 @@ import UseCases from '../../components/UseCases';
 import WhyBuyHardware from '../../components/WhyBuyHardware';
 import Testimonials from '../../components/Testimonials';
 import TrustSecurity from '../../components/TrustSecurity';
+import IndustrySolutions from '../../components/IndustrySolutions';
 
 const Solutions: React.FC = () => {
   return (
@@ -41,7 +42,10 @@ const Solutions: React.FC = () => {
       {/* Trust & Security */}
       <TrustSecurity />
 
-      {/* Industry Solutions */}
+      {/* Industry Solutions - New Component */}
+      <IndustrySolutions />
+
+      {/* Industry Solutions - Detailed */}
       <section className="py-20 bg-dark-card">
         <div className="container mx-auto px-6">
           <div className="max-w-6xl mx-auto">

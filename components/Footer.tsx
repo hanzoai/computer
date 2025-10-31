@@ -34,7 +34,7 @@ const Footer: React.FC = () => {
                     <div className="md:col-span-1">
                         <Logo />
                         <p className="mt-4 text-gray-400 max-w-xs">
-                            A subsidiary of Hanzo.AI, providing on-demand access to elite AI supercomputing hardware.
+                            Enterprise AI supercomputing hardware sales and long-term GPU leasing.
                         </p>
                     </div>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 md:col-span-2">

@@ -23,6 +23,7 @@ import Checkout from './src/pages/Checkout';
 import CheckoutSuccess from './src/pages/CheckoutSuccess';
 import Account from './src/pages/Account';
 import DGXSpark from './src/pages/DGXSpark';
+import RTXPro6000 from './src/pages/RTXPro6000';
 import TermsOfService from './src/pages/TermsOfService';
 import PrivacyPolicy from './src/pages/PrivacyPolicy';
 import RequestQuote from './src/pages/RequestQuote';
@@ -94,6 +95,7 @@ const App: React.FC = () => {
                 }
               />
               <Route path="/dgx-spark" element={<DGXSpark />} />
+              <Route path="/rtx-pro-6000" element={<RTXPro6000 />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/checkout/success" element={<CheckoutSuccess />} />

@@ -2,13 +2,16 @@
 import React from 'react';
 
 const PartnerLogos = () => (
-    <div className="flex items-center justify-center gap-6 flex-wrap">
-        <div className="bg-black/30 backdrop-blur-sm border border-dark-border px-4 py-3 rounded-lg flex flex-col items-center gap-1">
-            <img src="/nvidia-logo-clean.svg" alt="NVIDIA" className="h-8 w-auto" />
-            <span className="text-[8px] text-gray-400 font-semibold tracking-wider">INCEPTION PROGRAM</span>
+    <div className="flex items-center justify-center gap-8 flex-wrap">
+        <div className="flex flex-col items-center gap-1 opacity-70">
+            <img src="/nvidia-logo-clean.svg" alt="NVIDIA" className="h-10 w-auto" />
+            <span className="text-[9px] text-gray-400 font-semibold tracking-wider">INCEPTION PROGRAM</span>
         </div>
-        <div className="bg-black/30 backdrop-blur-sm border border-dark-border px-4 py-2 rounded-lg">
-            <img src="/techstars-white.svg" alt="Techstars" className="h-6 w-auto" />
+        <div className="opacity-70">
+            <img src="/techstars-white.svg" alt="Techstars" className="h-7 w-auto" />
+        </div>
+        <div className="opacity-70">
+            <img src="/digitalocean-white.svg" alt="DigitalOcean" className="h-6 w-auto" />
         </div>
     </div>
 )
@@ -33,7 +36,7 @@ const Hero: React.FC = () => {
                 </span>
             </h1>
             <p className="max-w-3xl mx-auto text-lg md:text-xl text-gray-400 mb-10">
-                Your portal to the world's most powerful AI hardware. Rent, buy, or co-locate NVIDIA DGX systems, H100s, and H200s, all managed by the experts at <span className="text-white font-medium">Hanzo.AI</span>.
+                Access NVIDIA's latest Blackwell architecture GPUs. Rent or buy B200 and B100 GPUs with unprecedented AI performance, 192GB HBM3e memory, and next-generation capabilities for frontier model training and inference.
             </p>
             <div className="flex justify-center items-center space-x-4">
                 <a href="#pricing" className="bg-primary text-black font-bold py-4 px-10 rounded-lg hover:bg-primary-dark transition-all duration-300 transform hover:scale-105 text-lg">

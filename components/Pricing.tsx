@@ -201,15 +201,16 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan, isLeaseMode }) => {
 const gpuPlans = [
     {
         id: 'dgx-spark',
-        name: 'DGX Spark',
+        name: 'DGX Spark (Blackwell)',
         price: '$4,000',
         priceValue: 4000,
         leasePrice: '$1,200',
         leasePriceValue: 1200,
         period: 'One-Time Setup',
-        description: 'Perfect for startups and researchers to kickstart projects on a powerful, dedicated DGX instance.',
+        description: 'Perfect for startups and researchers. Dedicated DGX instance powered by latest Blackwell architecture.',
         features: [
             'Dedicated DGX Instance',
+            'Blackwell Architecture',
             '100 Hours Compute Included',
             '2 TB NVMe Storage',
             'Pre-configured AI Stack',
@@ -217,6 +218,7 @@ const gpuPlans = [
         ],
         leaseFeatures: [
             'Dedicated DGX Instance',
+            'Blackwell Architecture',
             'Unlimited Monthly Compute',
             '2 TB NVMe Storage',
             'Pre-configured AI Stack',
@@ -229,6 +231,108 @@ const gpuPlans = [
         popular: true,
         mostPopularLease: true,
         purchaseMethod: 'stripe' as const,
+        isBlackwell: true,
+    },
+    {
+        id: 'rtx-pro-6000',
+        name: 'RTX PRO 6000 Blackwell',
+        price: '$8,357',
+        priceValue: 8357,
+        leasePrice: '$2,500',
+        leasePriceValue: 2500,
+        period: 'One-Time Purchase',
+        description: 'Professional workstation GPU with 96GB GDDR7 memory. Perfect for AI-enhanced applications, data science, and visualization.',
+        features: [
+            'Single RTX PRO 6000 GPU',
+            '96 GB GDDR7 with ECC',
+            '1792 GB/s Memory Bandwidth',
+            '24,064 CUDA Cores',
+            '752 Tensor Cores',
+            '188 RT Cores',
+            'Blackwell Architecture',
+            '4x DisplayPort 2.1',
+        ],
+        leaseFeatures: [
+            'Single RTX PRO 6000 GPU',
+            '96 GB GDDR7 with ECC',
+            '1792 GB/s Memory Bandwidth',
+            '24,064 CUDA Cores',
+            '752 Tensor Cores',
+            'Blackwell Architecture',
+            '24/7 Priority Support',
+            'Automatic Upgrades',
+            'Cancel Anytime',
+        ],
+        cta: 'Add to Cart',
+        purchaseMethod: 'stripe' as const,
+        isBlackwell: true,
+    },
+    {
+        id: 'b200-hgx',
+        name: 'B200 HGX System',
+        price: 'Custom Quote',
+        priceValue: 0,
+        period: '',
+        description: 'NVIDIA B200 GPUs in HGX configuration. Available in 4-GPU or 8-GPU systems with NVLink connectivity.',
+        features: [
+            '4 or 8x B200 192GB GPUs',
+            '192 GB HBM3e per GPU',
+            '8 TB/s Memory Bandwidth',
+            'NVLink 5.0 Interconnect',
+            'Blackwell Architecture',
+            '2nd Gen Transformer Engine',
+            'HGX Platform Integration',
+            'Enterprise Support',
+        ],
+        cta: 'Contact Sales',
+        purchaseMethod: 'sales' as const,
+        salesLink: 'https://hanzo.ai/contact',
+        isBlackwell: true,
+    },
+    {
+        id: 'b100-hgx',
+        name: 'B100 HGX System',
+        price: 'Custom Quote',
+        priceValue: 0,
+        period: '',
+        description: 'NVIDIA B100 GPUs in HGX configuration. Cost-effective Blackwell platform for AI training and inference.',
+        features: [
+            '4 or 8x B100 192GB GPUs',
+            '192 GB HBM3e per GPU',
+            '8 TB/s Memory Bandwidth',
+            'NVLink 5.0 Interconnect',
+            'Blackwell Architecture',
+            'PCIe Gen6 Interface',
+            'HGX Platform Integration',
+            'Enterprise Support',
+        ],
+        cta: 'Contact Sales',
+        purchaseMethod: 'sales' as const,
+        salesLink: 'https://hanzo.ai/contact',
+        // Hidden from landing page - available via hardware specs page
+    },
+    {
+        id: 'gb300-nvl72',
+        name: 'GB300 NVL72 Exascale',
+        price: 'Custom Quote',
+        priceValue: 0,
+        period: '',
+        description: 'An exascale of compute in a rack. 72x NVIDIA B300 GPUs with direct liquid cooling for maximum AI performance.',
+        features: [
+            '72x NVIDIA B300 GPUs',
+            '288 GB HBM3e per GPU',
+            '20.7 TB Total GPU Memory',
+            '1.8 TB/s NVLink Interconnect',
+            '36x NVIDIA Grace CPUs',
+            'Direct Liquid Cooling',
+            'Exascale Supercomputer',
+            '800 Gb/s Networking',
+            'Enterprise Support & Services',
+        ],
+        cta: 'Contact Sales',
+        purchaseMethod: 'sales' as const,
+        salesLink: 'https://hanzo.ai/contact',
+        isBlackwell: true,
     },
     {
         id: 'h100-single',
@@ -364,6 +468,31 @@ const gpuPlans = [
         salesLink: 'https://hanzo.ai',
     },
     {
+        id: 'dgx-b200',
+        name: 'NVIDIA DGX B200',
+        price: 'From $580K',
+        priceValue: 580000,
+        period: '',
+        description: 'Enterprise-grade DGX system with 8x NVIDIA Blackwell B200 GPUs. The ultimate platform for AI development and deployment.',
+        features: [
+            '8x NVIDIA B200 GPUs',
+            '1,440 GB Total GPU Memory',
+            '64 TB/s HBM3e Bandwidth',
+            '72 PFLOPS FP8 Training',
+            '144 PFLOPS FP4 Inference',
+            'Dual Intel Xeon Platinum 8570',
+            '4TB DDR5 System Memory',
+            'NVIDIA Networking Included',
+            'NVIDIA AI Enterprise Software',
+            'NVIDIA Base Command',
+            '3-5 Year Support Options',
+        ],
+        cta: 'Contact Sales',
+        purchaseMethod: 'sales' as const,
+        salesLink: 'https://hanzo.ai/contact',
+        isBlackwell: true,
+    },
+    {
         id: 'enterprise-resale',
         name: 'Enterprise & Resale',
         price: 'Custom',
@@ -386,10 +515,10 @@ const gpuPlans = [
 const Pricing: React.FC = () => {
   const [isLeaseMode, setIsLeaseMode] = useState(false);
 
-  // Filter to show GPU plans in lease mode, all plans in buy mode
+  // Filter to show only Blackwell GPUs in both buy and lease modes
   const displayPlans = isLeaseMode
-    ? gpuPlans.filter(plan => plan.leasePrice) // Only show plans with lease options
-    : [...gpuPlans.slice(0, 1), ...gpuPlans.slice(5)]; // Show DGX Spark + cloud/enterprise options
+    ? gpuPlans.filter(plan => plan.leasePrice && plan.isBlackwell) // Only show Blackwell GPUs in lease mode
+    : gpuPlans.filter(plan => plan.isBlackwell); // Only show Blackwell GPUs in buy mode
 
   return (
     <section id="pricing" className="py-20 md:py-28 bg-dark-bg">

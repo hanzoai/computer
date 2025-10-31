@@ -21,6 +21,12 @@ const TechstarsLogo = () => (
     </div>
 );
 
+const DigitalOceanLogo = () => (
+    <div className="flex items-center justify-center">
+        <img src="/digitalocean-white.svg" alt="DigitalOcean" className="h-7 w-auto opacity-60" />
+    </div>
+);
+
 
 const Partners: React.FC = () => {
   return (
@@ -32,6 +38,8 @@ const Partners: React.FC = () => {
           <NvidiaInceptionLogo />
           <div className="h-10 w-px bg-gray-700 hidden md:block"></div>
           <TechstarsLogo />
+          <div className="h-10 w-px bg-gray-700 hidden md:block"></div>
+          <DigitalOceanLogo />
         </div>
       </div>
     </section>
