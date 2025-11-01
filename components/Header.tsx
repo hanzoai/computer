@@ -77,7 +77,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenSearch }) => {
   const [isProductsOpen, setIsProductsOpen] = useState(false);
 
   const productLinks = [
-    { name: 'DGX Spark', description: '$4,000 - Dedicated DGX Instance', href: '/#pricing' },
+    { name: 'DGX Spark', description: '$3,999 - Dedicated DGX Instance', href: '/dgx-spark' },
     { name: 'RTX PRO 6000', description: '$8,999 - Professional Blackwell GPU', href: '/rtx-pro-6000' },
     { name: 'Blackwell Systems', description: 'B200, B100, GB300 NVL72', href: '/#pricing' },
     { name: 'Clusters & SuperPODs', description: 'Enterprise AI Infrastructure', href: '/clusters' },
