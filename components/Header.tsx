@@ -16,7 +16,7 @@ const Logo: React.FC = () => (
         <path d="M66.7198 67V44.6369H44.5098V67H66.7198Z" fill="currentColor"></path>
     </svg>
     <div className="text-xl font-bold tracking-wider">
-        <span className="text-white">Zoo</span>
+        <span className="text-white">Hanzo</span>
     </div>
   </div>
 );
@@ -91,7 +91,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenSearch }) => {
   return (
     <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-dark-bg/80 backdrop-blur-lg border-b border-dark-border' : 'bg-transparent'}`}>
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-        <Link to="/" aria-label="Zoo Computer Home">
+        <Link to="/" aria-label="Hanzo Home">
           <Logo />
         </Link>
         <nav className="hidden md:flex items-center space-x-8">
