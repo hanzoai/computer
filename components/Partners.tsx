@@ -17,7 +17,7 @@ const NvidiaInceptionLogo = () => (
 
 const TechstarsLogo = () => (
     <div className="flex items-center justify-center">
-        <img src="/techstars-white.svg" alt="Techstars" className="h-8 w-auto opacity-60" />
+        <img src="/techstars-logo.png" alt="Techstars" className="h-10 w-auto" />
     </div>
 );
 
