@@ -26,6 +26,24 @@ const DGXSpark: React.FC = () => {
     {
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+      ),
+      title: '1 Petaflop Performance',
+      description: 'Desktop supercomputer power - 1,000 trillion floating point operations per second in a portable form factor.',
+    },
+    {
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+        </svg>
+      ),
+      title: 'Portable Powerhouse',
+      description: 'Backpack-portable design. Take your supercomputer anywhere - coffee shop, office, or home workspace.',
+    },
+    {
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
         </svg>
       ),
@@ -80,8 +98,10 @@ const DGXSpark: React.FC = () => {
   ];
 
   const specs = [
+    { label: 'AI Performance', value: '1+ Petaflop (FP16)' },
     { label: 'GPU Memory', value: 'Up to 640 GB' },
-    { label: 'Performance', value: '32 PFLOPS FP8' },
+    { label: 'Max Performance', value: '32 PFLOPS FP8' },
+    { label: 'Form Factor', value: 'Backpack Portable' },
     { label: 'Storage', value: '2 TB NVMe SSD' },
     { label: 'Compute Hours', value: '100 Hours Included' },
     { label: 'Setup Time', value: 'Instant' },
@@ -124,8 +144,9 @@ const DGXSpark: React.FC = () => {
           </h1>
 
           <p className="text-xl text-gray-300 mb-8">
-            Your gateway to enterprise-grade AI computing. Perfect for startups, researchers, and developers
-            who need dedicated GPU power without the enterprise price tag.
+            A <span className="text-primary font-semibold">1 petaflop supercomputer</span> that fits in a backpack.
+            Perfect for developers, researchers, and startups who need enterprise-grade AI computing power
+            without the enterprise price tag.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -148,6 +169,51 @@ const DGXSpark: React.FC = () => {
             alt="NVIDIA DGX Spark"
             className="w-full rounded-2xl shadow-2xl border border-primary/30"
           />
+        </div>
+
+        {/* Supercomputer Highlight */}
+        <div className="max-w-4xl mx-auto mb-20">
+          <div className="bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 border border-primary/30 rounded-2xl p-8 md:p-12">
+            <div className="flex flex-col md:flex-row items-center gap-8">
+              <div className="flex-shrink-0">
+                <div className="w-24 h-24 bg-primary/20 rounded-2xl flex items-center justify-center">
+                  <svg className="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                  </svg>
+                </div>
+              </div>
+              <div className="flex-1 text-center md:text-left">
+                <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
+                  Your Personal Supercomputer, Anywhere
+                </h3>
+                <p className="text-gray-300 text-lg mb-4">
+                  DGX Spark delivers <span className="text-primary font-semibold">1 petaflop of AI performance</span> in a
+                  compact, portable form factor. Perfect for developers who need supercomputer-class power on the go -
+                  from hackathons to coffee shops to your home office.
+                </p>
+                <div className="flex flex-wrap gap-4 justify-center md:justify-start">
+                  <div className="flex items-center gap-2 text-sm text-gray-400">
+                    <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Backpack portable</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-gray-400">
+                    <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Work from anywhere</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-gray-400">
+                    <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Enterprise-grade power</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* CTA Section */}
