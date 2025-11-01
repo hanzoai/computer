@@ -202,8 +202,8 @@ const gpuPlans = [
     {
         id: 'dgx-spark',
         name: 'DGX Spark (Blackwell)',
-        price: '$4,000',
-        priceValue: 4000,
+        price: '$3,999',
+        priceValue: 3999,
         leasePrice: '$1,200',
         leasePriceValue: 1200,
         period: 'One-Time Setup',
