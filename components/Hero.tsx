@@ -3,15 +3,14 @@ import React from 'react';
 
 const PartnerLogos = () => (
     <div className="flex items-center justify-center gap-8 flex-wrap">
-        <div className="flex flex-col items-center gap-1 opacity-70">
+        <div className="opacity-70">
             <img src="/nvidia-logo-clean.svg" alt="NVIDIA" className="h-10 w-auto" />
-            <span className="text-[9px] text-gray-400 font-semibold tracking-wider">INCEPTION PROGRAM</span>
         </div>
         <div className="opacity-70">
-            <img src="/techstars-white.svg" alt="Techstars" className="h-7 w-auto" />
+            <img src="/techstars-green.png" alt="Techstars" className="h-8 w-auto" />
         </div>
         <div className="opacity-70">
-            <img src="/digitalocean-white.svg" alt="DigitalOcean" className="h-6 w-auto" />
+            <img src="/digitalocean-2.svg" alt="DigitalOcean" className="h-7 w-auto" />
         </div>
     </div>
 )
@@ -19,10 +18,6 @@ const PartnerLogos = () => (
 const Hero: React.FC = () => {
   return (
     <section id="home" className="min-h-screen flex items-center justify-center pt-24 pb-12 relative overflow-hidden">
-        <div
-            className="absolute inset-0 bg-cover bg-center opacity-20"
-            style={{backgroundImage: "url('/nvidia-dgx-superpod.jpg')"}}
-        ></div>
         <div className="absolute inset-0 bg-gradient-to-b from-dark-bg via-dark-bg/80 to-dark-bg"></div>
 
         <div className="container mx-auto px-6 text-center relative z-10 animate-fade-in-up">
