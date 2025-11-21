@@ -11,19 +11,18 @@ const HanzoAILogo = () => (
 const NvidiaInceptionLogo = () => (
     <div className="flex flex-col items-center justify-center gap-1.5 opacity-60">
         <img src="/nvidia-logo-clean.svg" alt="NVIDIA" className="h-12 w-auto" />
-        <span className="text-[10px] text-gray-400 font-semibold tracking-wider">INCEPTION PROGRAM</span>
     </div>
 );
 
 const TechstarsLogo = () => (
     <div className="flex items-center justify-center">
-        <img src="/techstars-logo.png" alt="Techstars" className="h-10 w-auto" />
+        <img src="/techstars-green.png" alt="Techstars" className="h-10 w-auto" />
     </div>
 );
 
 const DigitalOceanLogo = () => (
     <div className="flex items-center justify-center">
-        <img src="/digitalocean-white.svg" alt="DigitalOcean" className="h-7 w-auto opacity-60" />
+        <img src="/digitalocean-2.svg" alt="DigitalOcean" className="h-8 w-auto" />
     </div>
 );
 
