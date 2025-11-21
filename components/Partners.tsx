@@ -4,7 +4,7 @@ import React from 'react';
 const HanzoAILogo = () => (
     <div className="flex items-center space-x-3">
         <img src="/hanzo-h-white.svg" alt="Hanzo" className="h-10 w-auto" />
-        <span className="text-3xl font-bold text-gray-400">Hanzo AI</span>
+        <span className="text-3xl font-bold text-white">Hanzo AI</span>
     </div>
 );
 
