@@ -137,7 +137,7 @@ const Account: React.FC = () => {
               </svg>
               <div className="flex-1">
                 <h3 className="text-lg font-bold text-white mb-1">Order Placed Successfully!</h3>
-                <p className="text-green-300">Thank you for your purchase. Your DGX Spark instance will be provisioned within 24-48 hours. We'll send you an email with access details.</p>
+                <p className="text-green-300">Thank you for your purchase. You will receive an order confirmation email within 24 hours with shipping details.</p>
               </div>
               <button
                 onClick={() => setShowSuccess(false)}
