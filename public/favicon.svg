@@ -1,10 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <defs>
-    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#00ff9b;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#2d6ae3;stop-opacity:1" />
-    </linearGradient>
-  </defs>
-  <rect width="100" height="100" rx="20" fill="#0a0a0f"/>
-  <text x="50" y="70" font-family="Inter, sans-serif" font-size="60" font-weight="800" fill="url(#grad)" text-anchor="middle">H</text>
+<svg viewBox="0 0 67 67" xmlns="http://www.w3.org/2000/svg">
+  <rect width="67" height="67" fill="#000000"/>
+  <g>
+    <path d="M17 54V36.1H4V54H17Z" fill="#ffffff"/>
+    <path d="M4 36.1L17 37.6V36.1H4Z" fill="#DDDDDD" opacity="0.7"/>
+    <path d="M53.6 17.4H17.2L4 36.1H40.3L53.6 17.4Z" fill="#ffffff"/>
+    <path d="M17 4H4V17.4H17V4Z" fill="#ffffff"/>
+    <path d="M53.6 4H40.4V17.4H53.6V4Z" fill="#ffffff"/>
+    <path d="M53.6 17.4L40.4 15.7V17.4H53.6Z" fill="#DDDDDD" opacity="0.7"/>
+    <path d="M53.6 54V36.1H40.4V54H53.6Z" fill="#ffffff"/>
+  </g>
 </svg>
