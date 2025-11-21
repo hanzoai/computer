@@ -197,7 +197,7 @@ const gpuPlans = [
         price: '$3,999',
         priceValue: 3999,
         period: 'One-Time Setup',
-        description: 'Perfect for startups and researchers. Dedicated DGX instance powered by latest Blackwell architecture.',
+        description: 'Perfect for startups and researchers. Dedicated DGX instance powered by latest Blackwell architecture. Limited to one per customer.',
         features: [
             'Dedicated DGX Instance',
             'Blackwell Architecture',
@@ -205,6 +205,7 @@ const gpuPlans = [
             '2 TB NVMe Storage',
             'Pre-configured AI Stack',
             'Community & Docs Support',
+            'Limit: One Per Customer',
         ],
         cta: 'Add to Cart',
         popular: true,
