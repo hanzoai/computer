@@ -68,7 +68,7 @@ const TermsOfService: React.FC = () => {
 
             <h3 className="text-xl font-semibold text-white mb-2">4.3 Delivery & Setup</h3>
             <p className="mb-4">
-              Hardware instances are provisioned within 24-48 hours of payment confirmation. You will receive access credentials and setup instructions via email.
+              Hardware orders are processed within 24 hours of payment confirmation. You will receive an order confirmation and shipping details via email.
             </p>
 
             <h3 className="text-xl font-semibold text-white mb-2">4.4 Refund Policy</h3>
