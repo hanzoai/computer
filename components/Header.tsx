@@ -196,7 +196,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenSearch }) => {
             ) : (
               <Link
                 to="/signin"
-                className="hidden md:inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-secondary text-white font-semibold rounded-lg hover:opacity-90 transition-opacity"
+                className="hidden md:inline-flex items-center gap-2 px-4 py-2 bg-white text-black font-semibold rounded-lg hover:bg-gray-100 transition-colors"
               >
                 Sign In
               </Link>
