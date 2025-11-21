@@ -3,15 +3,9 @@ import React from 'react';
 
 const PartnerLogos = () => (
     <div className="flex items-center justify-center gap-8 flex-wrap">
-        <div className="opacity-70">
-            <img src="/nvidia-logo-clean.svg" alt="NVIDIA" className="h-10 w-auto" />
-        </div>
-        <div className="opacity-70">
-            <img src="/techstars-green.png" alt="Techstars" className="h-8 w-auto" />
-        </div>
-        <div className="opacity-70">
-            <img src="/digitalocean-2.svg" alt="DigitalOcean" className="h-7 w-auto" />
-        </div>
+        <img src="/nvidia-logo-clean.svg" alt="NVIDIA" className="h-10 w-auto" />
+        <img src="/techstars-green.png" alt="Techstars" className="h-8 w-auto" />
+        <img src="/digitalocean-2.svg" alt="DigitalOcean" className="h-7 w-auto" />
     </div>
 )
 
