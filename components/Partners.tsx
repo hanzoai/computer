@@ -3,13 +3,13 @@ import React from 'react';
 
 const HanzoAILogo = () => (
     <div className="flex items-center space-x-3">
-        <img src="/hanzo-h-white.svg" alt="Hanzo" className="h-10 w-auto opacity-60" />
+        <img src="/hanzo-h-white.svg" alt="Hanzo" className="h-10 w-auto" />
         <span className="text-3xl font-bold text-gray-400">Hanzo AI</span>
     </div>
 );
 
 const NvidiaInceptionLogo = () => (
-    <div className="flex flex-col items-center justify-center gap-1.5 opacity-60">
+    <div className="flex flex-col items-center justify-center gap-1.5">
         <img src="/nvidia-logo-clean.svg" alt="NVIDIA" className="h-12 w-auto" />
     </div>
 );
