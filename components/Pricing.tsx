@@ -196,7 +196,7 @@ const gpuPlans = [
         name: 'DGX Spark (Blackwell)',
         price: '$3,999',
         priceValue: 3999,
-        period: 'One-Time Purchase',
+        period: '',
         description: 'Perfect for startups and researchers. Dedicated DGX instance powered by latest Blackwell architecture. Limited to one per customer.',
         features: [
             'Dedicated DGX Instance',
