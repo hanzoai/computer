@@ -9,8 +9,8 @@ const IAM_URL = (import.meta.env.VITE_IAM_URL as string) || 'https://hanzo.id'
 const CLIENT_ID = (import.meta.env.VITE_IAM_CLIENT_ID as string) || 'app-computer'
 const REDIRECT_URI = `${window.location.origin}/auth/callback`
 
-const AUTHORIZE_URL = `${IAM_URL}/login/oauth/authorize`
-const TOKEN_URL = `${IAM_URL}/api/login/oauth/access_token`
+const AUTHORIZE_URL = `${IAM_URL}/oauth/authorize`
+const TOKEN_URL = `${IAM_URL}/oauth/token`
 const USERINFO_URL = `${IAM_URL}/api/userinfo`
 
 // ---------------------------------------------------------------------------
