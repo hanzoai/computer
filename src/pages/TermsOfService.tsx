@@ -63,7 +63,7 @@ const TermsOfService: React.FC = () => {
 
             <h3 className="text-xl font-semibold text-white mb-2">4.2 Payment</h3>
             <p className="mb-4">
-              All hardware purchases are processed securely through Stripe. Payment must be received in full before hardware provisioning begins.
+              All hardware purchases are processed securely through our billing portal. Payment must be received in full before hardware provisioning begins.
             </p>
 
             <h3 className="text-xl font-semibold text-white mb-2">4.3 Delivery & Setup</h3>
@@ -89,7 +89,7 @@ const TermsOfService: React.FC = () => {
             <ul className="list-disc list-inside space-y-2 pl-4 mb-4">
               <li>Monthly subscriptions bill on the 1st of each month</li>
               <li>6-month and annual subscriptions are prepaid</li>
-              <li>All payments processed via Stripe</li>
+              <li>All payments processed via Hanzo Billing</li>
               <li>Automatic renewal unless cancelled 7 days before renewal date</li>
             </ul>
 

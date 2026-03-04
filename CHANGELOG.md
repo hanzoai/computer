@@ -2,23 +2,23 @@
 
 ## [2.0.0] - 2025-01-30
 
-### 🎉 Major Release - Full Ecommerce Implementation
+### Major Release - Full Ecommerce Implementation
 
-Complete shopping cart, checkout, and account management system with Stripe integration.
+Complete shopping cart, checkout, and account management system with Hanzo Billing integration.
 
 ---
 
-## ✨ Added
+## Added
 
 ### Shopping Experience
 - **Shopping Cart System** (`src/context/CartContext.tsx`)
   - React Context API for global state management
   - LocalStorage persistence for cart items
-  - Separate tracking for Stripe vs. Sales products
+  - Separate tracking for online purchasable vs. sales products
   - Real-time cart item counter
 
 - **Cart Page** (`src/pages/Cart.tsx`)
-  - Two-section layout: Stripe purchasable vs. Sales consultation
+  - Two-section layout: online purchasable vs. sales consultation
   - Quantity controls for purchasable items
   - Remove items functionality
   - Order summary with total price
@@ -26,13 +26,11 @@ Complete shopping cart, checkout, and account management system with Stripe inte
   - Empty cart state with "Browse Hardware" link
 
 - **Checkout Page** (`src/pages/Checkout.tsx`)
-  - Stripe Elements integration
-  - Secure credit card input form
-  - Billing address collection
+  - Billing details collection (email, name)
+  - Redirect to Hanzo Billing portal for secure payment
   - Order summary sidebar
   - Real-time validation and error handling
   - Success redirect to account page
-  - Demo mode: simulates payment processing
 
 - **Account Page** (`src/pages/Account.tsx`)
   - Order history with status tracking
@@ -55,7 +53,7 @@ Complete shopping cart, checkout, and account management system with Stripe inte
 - **Updated Pricing Component** (`components/Pricing.tsx`)
   - Purchase method indicators:
     - Green "Buy Now" badge on DGX Spark
-    - "Pay with Credit Card (Stripe)" notice
+    - "Pay with Credit Card" notice
     - "Contact Sales Required" notice on enterprise products
   - "Add to Cart" functionality with success feedback
   - Direct sales links to Hanzo.AI for enterprise products
@@ -71,7 +69,7 @@ Complete shopping cart, checkout, and account management system with Stripe inte
 
 ### Configuration
 - **Environment Variables** (`.env.example`)
-  - Stripe publishable key template
+  - Supabase configuration template
   - Setup instructions
 
 ### Documentation
@@ -82,12 +80,10 @@ Complete shopping cart, checkout, and account management system with Stripe inte
 
 ---
 
-## 🔧 Changed
+## Changed
 
 ### Dependencies
 - Added `react-router-dom` (v7.x)
-- Added `@stripe/stripe-js`
-- Added `@stripe/react-stripe-js`
 
 ### Components
 - **Header**: Added cart and account icons, updated navigation links
@@ -101,18 +97,18 @@ Complete shopping cart, checkout, and account management system with Stripe inte
 
 ---
 
-## 🎯 Highlighted Features
+## Highlighted Features
 
 ### Purchase Methods
-1. **Stripe (Credit Card)** - DGX Spark ($4,000)
-   - ✅ Instant online purchase
-   - 💳 Secure Stripe checkout
-   - 🚀 24-48 hour provisioning
+1. **Credit Card** - DGX Spark ($4,000)
+   - Instant online purchase
+   - Secure checkout via Hanzo Billing
+   - 24-48 hour provisioning
 
 2. **Sales Consultation** - Enterprise Solutions
-   - 💬 Custom quotes
-   - 🏢 Enterprise configuration
-   - 📞 Direct link to Hanzo.AI
+   - Custom quotes
+   - Enterprise configuration
+   - Direct link to Hanzo.AI
 
 ### Visual Indicators
 - **Buy Now Badge**: Green badge on purchasable items
@@ -129,7 +125,7 @@ Complete shopping cart, checkout, and account management system with Stripe inte
 
 ---
 
-## 📊 Statistics
+## Statistics
 
 ### Code Changes
 - **Files Created**: 7
@@ -150,18 +146,18 @@ Complete shopping cart, checkout, and account management system with Stripe inte
 - **Bundle Size**: 301.50 KB (gzipped: 91.70 KB)
 
 ### Features Completed
-- ✅ 12 main tasks
-- ✅ 0 build errors
-- ✅ Full TypeScript type safety
-- ✅ Mobile responsive
-- ✅ Production-ready UI
+- 12 main tasks
+- 0 build errors
+- Full TypeScript type safety
+- Mobile responsive
+- Production-ready UI
 
 ---
 
-## 🔮 Future Enhancements
+## Future Enhancements
 
 ### Phase 1 (Backend Integration)
-- [ ] Implement server-side Stripe API
+- [ ] Implement server-side payment API
 - [ ] Database for orders and users
 - [ ] User authentication system
 - [ ] Email confirmations
@@ -177,13 +173,13 @@ Complete shopping cart, checkout, and account management system with Stripe inte
 ### Phase 3 (Advanced Features)
 - [ ] Self-service instance management
 - [ ] Usage dashboard and analytics
-- [ ] Multiple payment methods (ACH, wire)
+- [ ] Multiple payment methods (ACH, wire, crypto)
 - [ ] Multi-region support
 - [ ] API for programmatic orders
 
 ---
 
-## 🐛 Known Limitations
+## Known Limitations
 
 ### Demo Mode
 - Orders stored in LocalStorage (not persistent across devices)
@@ -200,7 +196,7 @@ Complete shopping cart, checkout, and account management system with Stripe inte
 
 ---
 
-## 🚀 Deployment
+## Deployment
 
 ### Current
 - **Platform**: GitHub Pages
@@ -210,7 +206,7 @@ Complete shopping cart, checkout, and account management system with Stripe inte
 
 ### Production Checklist
 - [ ] Add backend API (Node.js/Python/Go)
-- [ ] Configure production Stripe keys
+- [ ] Configure production billing keys
 - [ ] Set up database (PostgreSQL/MongoDB)
 - [ ] Implement authentication
 - [ ] Configure email service
@@ -221,17 +217,17 @@ Complete shopping cart, checkout, and account management system with Stripe inte
 
 ---
 
-## 📝 Notes
+## Notes
 
 ### Design Decisions
 1. **Context API over Redux**: Simpler for cart state, sufficient for current scale
 2. **LocalStorage**: Demo persistence, will be replaced with DB
-3. **Stripe Elements**: Industry standard, PCI-compliant
+3. **Hanzo Billing**: PCI-compliant payment portal
 4. **React Router**: Client-side routing for SPA experience
 5. **TypeScript**: Type safety and better DX
 
 ### Security Considerations
-- Stripe handles sensitive payment data
+- Hanzo Billing handles sensitive payment data
 - No PCI compliance burden on client
 - Environment variables for API keys
 - HTTPS required for production
@@ -245,17 +241,17 @@ Complete shopping cart, checkout, and account management system with Stripe inte
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **Hanzo AI Team** - Product requirements and design guidance
-- **Stripe** - Payment infrastructure
+- **Square** - Payment infrastructure
 - **React Router** - Navigation library
 - **Tailwind CSS** - Styling framework
 - **Vite** - Build tooling
 
 ---
 
-**Version**: 2.0.0  
-**Date**: January 30, 2025  
-**Author**: Hanzo AI Development Team  
+**Version**: 2.0.0
+**Date**: January 30, 2025
+**Author**: Hanzo AI Development Team
 **License**: Proprietary

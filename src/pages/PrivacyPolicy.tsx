@@ -42,7 +42,7 @@ const PrivacyPolicy: React.FC = () => {
             <p className="mb-4">We collect information that you provide directly to us, including:</p>
             <ul className="list-disc list-inside space-y-2 pl-4">
               <li><strong>Account Information:</strong> Name, email address, company name, phone number</li>
-              <li><strong>Payment Information:</strong> Credit card details, billing address (processed securely via Stripe)</li>
+              <li><strong>Payment Information:</strong> Credit card details, billing address (processed securely via our payment provider)</li>
               <li><strong>Profile Information:</strong> Job title, use case descriptions, technical requirements</li>
               <li><strong>Communication Data:</strong> Messages, support tickets, RFQ submissions</li>
             </ul>
@@ -107,7 +107,7 @@ const PrivacyPolicy: React.FC = () => {
 
             <h3 className="text-xl font-semibold text-white mb-2 mt-4">4.1 Service Providers</h3>
             <ul className="list-disc list-inside space-y-2 pl-4 mb-4">
-              <li><strong>Payment Processing:</strong> Stripe (for secure payment handling)</li>
+              <li><strong>Payment Processing:</strong> Hanzo Commerce (for secure payment handling)</li>
               <li><strong>Cloud Infrastructure:</strong> AWS, DigitalOcean (for hosting)</li>
               <li><strong>Email Services:</strong> SendGrid or AWS SES (for transactional emails)</li>
               <li><strong>Analytics:</strong> Aggregated, anonymized data for service improvement</li>

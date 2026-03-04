@@ -13,7 +13,7 @@ const RTXPro6000: React.FC = () => {
       name: 'RTX PRO 6000 Blackwell',
       price: 8999,
       description: 'Professional workstation GPU with 96GB GDDR7 memory. Perfect for AI-enhanced applications, data science, and visualization.',
-      purchaseMethod: 'stripe',
+      purchaseMethod: 'online',
       image: '/nvidia-blackwell-ultra.jpg',
     });
     setAdded(true);

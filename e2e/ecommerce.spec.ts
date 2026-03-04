@@ -57,9 +57,8 @@ test.describe('Ecommerce Flow', () => {
     await expect(page.getByText('Qty: 5')).toBeVisible();
     await expect(page.getByText('$20,000').first()).toBeVisible();
 
-    // Verify Stripe payment form is loaded
-    await expect(page.getByText(/Card Details/i)).toBeVisible();
-    await expect(page.getByRole('button', { name: /Pay \$20,000/i })).toBeVisible();
+    // Verify payment form is loaded
+    await expect(page.getByRole('button', { name: /Continue to Payment/i })).toBeVisible();
   });
 
   test('should enforce 5-item limit for DGX Spark', async ({ page }) => {
@@ -89,7 +88,7 @@ test.describe('Ecommerce Flow', () => {
     await expect(page.getByText(/Max 5 per order/i)).toBeVisible();
   });
 
-  test('should show sales contact for non-Stripe products', async ({ page }) => {
+  test('should show sales contact for sales-only products', async ({ page }) => {
     await page.goto('/');
 
     // Scroll to pricing section

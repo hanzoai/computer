@@ -1,168 +1,36 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { loadStripe } from '@stripe/stripe-js';
-import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { useCart } from '../context/CartContext';
-import { createPaymentIntent, createSubscription, formatAmount, handleStripeError } from '../lib/stripe';
-import { supabase } from '../lib/supabase';
 
-// Initialize Stripe with publishable key
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_YOUR_KEY_HERE');
-
-const CheckoutForm: React.FC = () => {
-  const stripe = useStripe();
-  const elements = useElements();
+const Checkout: React.FC = () => {
   const navigate = useNavigate();
-  const { getStripePurchasableItems, clearCart } = useCart();
-  const [processing, setProcessing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [clientSecret, setClientSecret] = useState<string>('');
-  const [paymentIntentId, setPaymentIntentId] = useState<string>('');
+  const { getPurchasableItems, clearCart } = useCart();
   const [formData, setFormData] = useState({
     email: '',
     name: '',
-    address: '',
-    city: '',
-    state: '',
-    zip: '',
-    country: 'US',
   });
 
-  const items = getStripePurchasableItems();
+  const items = getPurchasableItems();
   const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const hasSubscriptions = items.some(item => item.subscriptionType === 'monthly');
 
-  // Create payment intent on component mount
-  useEffect(() => {
-    if (items.length === 0) return;
-
-    const initializePayment = async () => {
-      try {
-        // For now, handle all as one-time payments
-        // In production, you'd separate subscriptions
-        const metadata = {
-          items: JSON.stringify(items.map(item => ({
-            id: item.id,
-            name: item.name,
-            quantity: item.quantity,
-            price: item.price,
-            subscriptionType: item.subscriptionType
-          })))
-        };
-
-        const { clientSecret: secret, paymentIntentId: intentId } = await createPaymentIntent(
-          totalPrice,
-          'usd',
-          metadata
-        );
-
-        setClientSecret(secret);
-        setPaymentIntentId(intentId);
-      } catch (err) {
-        console.error('Error creating payment intent:', err);
-        setError('Failed to initialize payment. Please try again.');
-      }
-    };
-
-    initializePayment();
-  }, [items, totalPrice]);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!stripe || !elements || !clientSecret) {
-      return;
-    }
-
-    if (!formData.email || !formData.name) {
-      setError('Please fill in all required fields');
-      return;
-    }
-
-    setProcessing(true);
-    setError(null);
-
-    try {
-      const cardElement = elements.getElement(CardElement);
-
-      if (!cardElement) {
-        throw new Error('Card element not found');
-      }
-
-      // Confirm the payment with Stripe
-      const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: cardElement,
-          billing_details: {
-            name: formData.name,
-            email: formData.email,
-            address: {
-              line1: formData.address,
-              city: formData.city,
-              state: formData.state,
-              postal_code: formData.zip,
-              country: formData.country,
-            },
-          },
-        },
-      });
-
-      if (confirmError) {
-        throw new Error(handleStripeError(confirmError));
-      }
-
-      if (paymentIntent?.status === 'succeeded') {
-        // Create order in Supabase
-        const { data: userData } = await supabase.auth.getUser();
-
-        const orderData = {
-          user_id: userData?.user?.id || null,
-          payment_intent_id: paymentIntentId,
-          amount: totalPrice,
-          currency: 'usd',
-          status: 'completed',
-          items: items,
-          customer_info: formData,
-          created_at: new Date().toISOString(),
-        };
-
-        // Try to save to Supabase, but don't fail if it doesn't work
-        try {
-          const { error: orderError } = await supabase
-            .from('orders')
-            .insert([orderData]);
-
-          if (orderError) {
-            console.error('Error saving order to database:', orderError);
-          }
-        } catch (dbError) {
-          console.error('Database error:', dbError);
-        }
-
-        // Also store in localStorage as fallback
-        const localOrder = {
-          id: `ORD-${Date.now()}`,
-          ...orderData,
-        };
-
-        const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-        orders.push(localOrder);
-        localStorage.setItem('orders', JSON.stringify(orders));
-
-        // Clear cart and redirect to success page
-        clearCart();
-        navigate(`/checkout/success?payment_intent=${paymentIntentId}`);
-      } else {
-        throw new Error('Payment was not successful. Please try again.');
-      }
-    } catch (err: any) {
-      setError(err.message || 'An error occurred processing your payment');
-      setProcessing(false);
-    }
+  const handleCheckout = () => {
+    // Redirect to billing portal with order context
+    const params = new URLSearchParams({
+      email: formData.email,
+      name: formData.name,
+      items: JSON.stringify(items.map(item => ({
+        id: item.id,
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+      }))),
+      total: totalPrice.toString(),
+    });
+    window.location.href = `https://billing.hanzo.ai/checkout?${params.toString()}`;
   };
 
   if (items.length === 0) {
@@ -196,7 +64,7 @@ const CheckoutForm: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Checkout Form */}
             <div className="lg:col-span-2">
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-6">
                 {/* Contact Information */}
                 <div className="bg-dark-card border border-dark-border rounded-xl p-6">
                   <h2 className="text-xl font-bold text-white mb-4">Contact Information</h2>
@@ -232,165 +100,37 @@ const CheckoutForm: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Billing Address */}
+                {/* Payment */}
                 <div className="bg-dark-card border border-dark-border rounded-xl p-6">
-                  <h2 className="text-xl font-bold text-white mb-4">Billing Address</h2>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">
-                        Address
-                      </label>
-                      <input
-                        type="text"
-                        name="address"
-                        value={formData.address}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-3 bg-dark-bg border border-dark-border rounded-lg text-white focus:outline-none focus:border-primary transition-colors"
-                        placeholder="123 Main St"
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
-                          City
-                        </label>
-                        <input
-                          type="text"
-                          name="city"
-                          value={formData.city}
-                          onChange={handleInputChange}
-                          className="w-full px-4 py-3 bg-dark-bg border border-dark-border rounded-lg text-white focus:outline-none focus:border-primary transition-colors"
-                          placeholder="San Francisco"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
-                          State
-                        </label>
-                        <input
-                          type="text"
-                          name="state"
-                          value={formData.state}
-                          onChange={handleInputChange}
-                          className="w-full px-4 py-3 bg-dark-bg border border-dark-border rounded-lg text-white focus:outline-none focus:border-primary transition-colors"
-                          placeholder="CA"
-                        />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
-                          ZIP Code
-                        </label>
-                        <input
-                          type="text"
-                          name="zip"
-                          value={formData.zip}
-                          onChange={handleInputChange}
-                          className="w-full px-4 py-3 bg-dark-bg border border-dark-border rounded-lg text-white focus:outline-none focus:border-primary transition-colors"
-                          placeholder="94105"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
-                          Country
-                        </label>
-                        <select
-                          name="country"
-                          value={formData.country}
-                          onChange={handleInputChange}
-                          className="w-full px-4 py-3 bg-dark-bg border border-dark-border rounded-lg text-white focus:outline-none focus:border-primary transition-colors"
-                        >
-                          <option value="US">United States</option>
-                          <option value="CA">Canada</option>
-                          <option value="GB">United Kingdom</option>
-                          <option value="AU">Australia</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Payment Information */}
-                <div className="bg-dark-card border border-dark-border rounded-xl p-6">
-                  <h2 className="text-xl font-bold text-white mb-4">Payment Information</h2>
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Card Details *
-                    </label>
-                    <div className="p-4 bg-dark-bg border border-dark-border rounded-lg">
-                      <CardElement
-                        options={{
-                          style: {
-                            base: {
-                              fontSize: '16px',
-                              color: '#ffffff',
-                              '::placeholder': {
-                                color: '#9ca3af',
-                              },
-                            },
-                            invalid: {
-                              color: '#ef4444',
-                            },
-                          },
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  {error && (
-                    <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg mb-4">
-                      <p className="text-sm text-red-400">{error}</p>
-                    </div>
-                  )}
-
-                  {!clientSecret && items.length > 0 && (
-                    <div className="p-4 bg-primary/10 border border-primary/30 rounded-lg mb-4">
-                      <div className="flex items-center gap-2">
-                        <svg className="animate-spin h-5 w-5 text-primary" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                        </svg>
-                        <p className="text-sm text-gray-300">Initializing secure payment...</p>
-                      </div>
-                    </div>
-                  )}
+                  <h2 className="text-xl font-bold text-white mb-4">Payment</h2>
+                  <p className="text-gray-400 mb-6">
+                    You will be redirected to our secure billing portal to complete payment.
+                  </p>
 
                   <button
-                    type="submit"
-                    disabled={!stripe || processing || !clientSecret}
+                    type="button"
+                    onClick={handleCheckout}
+                    disabled={!formData.email || !formData.name}
                     className="w-full bg-primary text-black font-bold py-4 px-6 rounded-lg hover:bg-primary-dark transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
-                    {processing ? (
-                      <>
-                        <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                        </svg>
-                        Processing...
-                      </>
-                    ) : (
-                      <>
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                        </svg>
-                        Pay ${totalPrice.toLocaleString()}
-                      </>
-                    )}
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    Continue to Payment - ${totalPrice.toLocaleString()}
                   </button>
 
                   <p className="text-xs text-gray-500 mt-4 text-center">
-                    Your payment information is encrypted and secure. We use Stripe for payment processing.
+                    Your payment information is encrypted and secure.
                   </p>
                 </div>
-              </form>
+              </div>
             </div>
 
             {/* Order Summary */}
             <div className="lg:col-span-1">
               <div className="bg-dark-card border border-dark-border rounded-xl p-6 sticky top-24">
                 <h2 className="text-xl font-bold text-white mb-6">Order Summary</h2>
-                
+
                 <div className="space-y-4 mb-6">
                   {items.map((item) => (
                     <div key={item.id} className="flex justify-between items-start">
@@ -436,14 +176,6 @@ const CheckoutForm: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
-
-const Checkout: React.FC = () => {
-  return (
-    <Elements stripe={stripePromise}>
-      <CheckoutForm />
-    </Elements>
   );
 };
 

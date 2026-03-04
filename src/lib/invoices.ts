@@ -66,7 +66,7 @@ export interface InvoiceData {
   // Related IDs
   orderId?: string;
   subscriptionId?: string;
-  stripeInvoiceId?: string;
+  externalInvoiceId?: string;
 }
 
 // Company information (Hanzo Computer)
@@ -193,7 +193,7 @@ export const createInvoiceFromOrder = async (
     termsAndConditions: getTermsAndConditions(),
 
     orderId: order.id,
-    stripeInvoiceId: order.stripe_payment_intent_id
+    externalInvoiceId: order.payment_intent_id
   };
 };
 
@@ -251,14 +251,14 @@ export const createInvoiceFromSubscription = async (
     amountPaid: 0,
     amountDue: total,
 
-    paymentMethod: 'stripe_card',
+    paymentMethod: 'card',
     paymentTerms: 'Monthly Subscription',
 
     notes: `Billing Period: ${formatDate(period.start)} - ${formatDate(period.end)}`,
     termsAndConditions: getTermsAndConditions(),
 
     subscriptionId: subscription.id,
-    stripeInvoiceId: subscription.stripe_subscription_id
+    externalInvoiceId: subscription.subscription_id
   };
 };
 
@@ -303,7 +303,7 @@ export const storeInvoice = async (
         (await supabase.from('subscriptions').select('user_id').eq('id', invoiceData.subscriptionId).single()).data?.user_id,
       order_id: invoiceData.orderId,
       subscription_id: invoiceData.subscriptionId,
-      stripe_invoice_id: invoiceData.stripeInvoiceId,
+      external_invoice_id: invoiceData.externalInvoiceId,
       amount_due: invoiceData.amountDue,
       amount_paid: invoiceData.amountPaid,
       status: invoiceData.status,

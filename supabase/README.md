@@ -48,7 +48,7 @@ Try submitting an RFQ or cluster request to verify the connection.
 - **quotes**: Admin-generated quotes
 - **orders**: Accepted quotes or direct purchases
 - **subscriptions**: Recurring GPU leasing subscriptions
-- **invoices**: Generated invoices (Stripe or manual)
+- **invoices**: Generated invoices
 - **gpu_reservations**: Provisioned GPU instances
 - **usage_records**: GPU usage tracking
 - **admin_actions**: Audit log for admin operations
@@ -107,7 +107,7 @@ Both RFQ and Clusters pages use Supabase for data persistence:
 2. ✅ RLS policies configured
 3. ⏳ Create admin dashboard to view RFQs/cluster requests
 4. ⏳ Build quote generation workflow
-5. ⏳ Integrate Stripe for payments
+5. ⏳ Integrate Hanzo Commerce for payments
 6. ⏳ Build customer dashboard
 
 ## Troubleshooting

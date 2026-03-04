@@ -13,7 +13,6 @@ export interface User {
   email: string;
   name: string;
   company?: string;
-  stripe_customer_id?: string;
   role: 'customer' | 'admin';
   created_at: string;
   updated_at: string;
@@ -76,8 +75,7 @@ export interface Order {
   order_number: string;
   user_id?: string;
   quote_id?: string;
-  stripe_payment_intent_id?: string;
-  stripe_subscription_id?: string;
+  payment_intent_id?: string;
   items: any; // JSON
   subtotal: number;
   tax: number;
@@ -94,9 +92,7 @@ export interface Subscription {
   id: string;
   user_id?: string;
   order_id?: string;
-  stripe_subscription_id: string;
-  stripe_product_id?: string;
-  stripe_price_id?: string;
+  subscription_id: string;
   gpu_type: string;
   quantity: number;
   status: 'active' | 'cancelled' | 'past_due' | 'paused';

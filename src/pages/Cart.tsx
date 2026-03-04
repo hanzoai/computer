@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 
 const Cart: React.FC = () => {
-  const { items, removeItem, updateQuantity, getTotalPrice, getStripePurchasableItems, getSalesItems } = useCart();
+  const { items, removeItem, updateQuantity, getTotalPrice, getPurchasableItems, getSalesItems } = useCart();
 
-  const stripePurchasableItems = getStripePurchasableItems();
+  const purchasableItems = getPurchasableItems();
   const salesItems = getSalesItems();
-  const stripeTotalPrice = stripePurchasableItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const purchasableTotalPrice = purchasableItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   if (items.length === 0) {
     return (
@@ -40,7 +40,7 @@ const Cart: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
-            {stripePurchasableItems.length > 0 && (
+            {purchasableItems.length > 0 && (
               <div className="bg-dark-card border border-dark-border rounded-xl p-6">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="bg-primary/20 p-2 rounded-lg">
@@ -50,12 +50,12 @@ const Cart: React.FC = () => {
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-white">Ready to Purchase</h2>
-                    <p className="text-sm text-gray-400">Pay securely with credit card via Stripe</p>
+                    <p className="text-sm text-gray-400">Pay securely with credit card</p>
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  {stripePurchasableItems.map((item) => (
+                  {purchasableItems.map((item) => (
                     <div key={item.id} className="flex gap-6 p-4 bg-dark-bg rounded-lg border border-dark-border">
                       {item.image && (
                         <div className="flex-shrink-0">
@@ -166,10 +166,10 @@ const Cart: React.FC = () => {
             <div className="bg-dark-card border border-dark-border rounded-xl p-6 sticky top-24">
               <h2 className="text-2xl font-bold text-white mb-6">Order Summary</h2>
 
-              {stripePurchasableItems.length > 0 && (
+              {purchasableItems.length > 0 && (
                 <>
                   <div className="space-y-3 mb-4">
-                    {stripePurchasableItems.map((item) => (
+                    {purchasableItems.map((item) => (
                       <div key={item.id} className="flex justify-between text-sm">
                         <span className="text-gray-400">
                           {item.name} × {item.quantity}
@@ -184,7 +184,7 @@ const Cart: React.FC = () => {
                   <div className="border-t border-dark-border pt-4 mb-6">
                     <div className="flex justify-between text-xl font-bold">
                       <span className="text-white">Total</span>
-                      <span className="text-primary">${stripeTotalPrice.toLocaleString()}</span>
+                      <span className="text-primary">${purchasableTotalPrice.toLocaleString()}</span>
                     </div>
                   </div>
 
@@ -199,12 +199,12 @@ const Cart: React.FC = () => {
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                     </svg>
-                    <span>Secure payment via Stripe</span>
+                    <span>Secure payment via Hanzo Billing</span>
                   </div>
                 </>
               )}
 
-              {salesItems.length > 0 && stripePurchasableItems.length === 0 && (
+              {salesItems.length > 0 && purchasableItems.length === 0 && (
                 <div className="text-center">
                   <p className="text-gray-400 mb-4">Enterprise items require sales consultation</p>
                   <a
