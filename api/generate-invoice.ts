@@ -169,7 +169,7 @@ export default async function handler(req: Request): Promise<Response> {
           paidAt: invoice.paid_at,
           orderId: invoice.order_id,
           subscriptionId: invoice.subscription_id,
-          stripeInvoiceId: invoice.stripe_invoice_id
+          externalInvoiceId: invoice.external_invoice_id
         };
         break;
 

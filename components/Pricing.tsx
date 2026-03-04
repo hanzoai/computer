@@ -53,7 +53,7 @@ interface PricingCardProps {
     cta: string;
     popular?: boolean;
     mostPopularLease?: boolean;
-    purchaseMethod: 'stripe' | 'sales';
+    purchaseMethod: 'online' | 'sales';
     salesLink?: string;
   };
   isLeaseMode: boolean;
@@ -71,14 +71,14 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan, isLeaseMode }) => {
   const isPopular = isLeaseMode ? plan.mostPopularLease : plan.popular;
 
   const handleAction = () => {
-    if (plan.purchaseMethod === 'stripe') {
+    if (plan.purchaseMethod === 'online') {
       // Add to cart and show feedback
       addItem({
         id: isLeaseMode ? `${plan.id}-lease` : plan.id,
         name: plan.name,
         price: currentPriceValue,
         description: plan.description,
-        purchaseMethod: 'stripe',
+        purchaseMethod: 'online',
         image: '/nvidia-dgx-spark-and-nvidia-dgx-station.jpg',
         subscriptionType: isLeaseMode ? 'monthly' : 'one-time',
         interval: isLeaseMode ? 'monthly' : undefined,
@@ -112,14 +112,14 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan, isLeaseMode }) => {
         <span className="text-gray-400 ml-2">{currentPeriod}</span>
       </div>
 
-      {plan.purchaseMethod === 'stripe' && (
+      {plan.purchaseMethod === 'online' && (
         <>
           <div className="mb-4 p-3 bg-primary/10 border border-primary/30 rounded-lg">
             <p className="text-sm text-primary font-semibold flex items-center gap-2">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
               </svg>
-              {isLeaseMode ? 'Monthly Subscription (Auto-renew)' : 'Pay with Credit Card (Stripe)'}
+              {isLeaseMode ? 'Monthly Subscription (Auto-renew)' : 'Pay with Credit Card'}
             </p>
           </div>
           {isLeaseMode ? (
@@ -209,7 +209,7 @@ const gpuPlans = [
         ],
         cta: 'Add to Cart',
         popular: true,
-        purchaseMethod: 'stripe' as const,
+        purchaseMethod: 'online' as const,
         isBlackwell: true,
     },
     {
@@ -230,7 +230,7 @@ const gpuPlans = [
             '4x DisplayPort 2.1',
         ],
         cta: 'Add to Cart',
-        purchaseMethod: 'stripe' as const,
+        purchaseMethod: 'online' as const,
         isBlackwell: true,
     },
     {

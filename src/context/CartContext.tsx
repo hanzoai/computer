@@ -6,7 +6,7 @@ export interface CartItem {
   price: number;
   quantity: number;
   description: string;
-  purchaseMethod: 'stripe' | 'sales';
+  purchaseMethod: 'online' | 'sales';
   image?: string;
   subscriptionType?: 'monthly' | 'one-time';
   interval?: 'monthly';
@@ -20,7 +20,7 @@ interface CartContextType {
   clearCart: () => void;
   getTotalItems: () => number;
   getTotalPrice: () => number;
-  getStripePurchasableItems: () => CartItem[];
+  getPurchasableItems: () => CartItem[];
   getSalesItems: () => CartItem[];
 }
 
@@ -86,8 +86,8 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     return items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   };
 
-  const getStripePurchasableItems = () => {
-    return items.filter((item) => item.purchaseMethod === 'stripe');
+  const getPurchasableItems = () => {
+    return items.filter((item) => item.purchaseMethod === 'online');
   };
 
   const getSalesItems = () => {
@@ -104,7 +104,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
         clearCart,
         getTotalItems,
         getTotalPrice,
-        getStripePurchasableItems,
+        getPurchasableItems,
         getSalesItems,
       }}
     >

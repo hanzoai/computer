@@ -4,12 +4,12 @@
 
 Successfully implemented a complete ecommerce shopping experience for Hanzo.Computer with the following key highlights:
 
-✅ **DGX Spark ($4,000)** - Only product purchasable with credit card via Stripe
-✅ **Enterprise Solutions** - All other products require sales consultation
-✅ **Clear Visual Indicators** - Users immediately understand purchase methods
-✅ **Full Shopping Flow** - Cart → Checkout → Order Confirmation → Account
+- **DGX Spark ($4,000)** - Only product purchasable with credit card via Hanzo Billing
+- **Enterprise Solutions** - All other products require sales consultation
+- **Clear Visual Indicators** - Users immediately understand purchase methods
+- **Full Shopping Flow** - Cart -> Checkout -> Order Confirmation -> Account
 
-## 🎯 Key Features Implemented
+## Key Features Implemented
 
 ### 1. Shopping Cart System
 **Location**: `src/context/CartContext.tsx`
@@ -17,7 +17,7 @@ Successfully implemented a complete ecommerce shopping experience for Hanzo.Comp
 - React Context API for global cart state
 - LocalStorage persistence
 - Add/remove/update quantity functionality
-- Separate tracking for Stripe vs. Sales items
+- Separate tracking for online purchasable vs. sales items
 - Cart item counter for header
 
 **Key Methods**:
@@ -25,7 +25,7 @@ Successfully implemented a complete ecommerce shopping experience for Hanzo.Comp
 - `removeItem()` - Remove from cart
 - `updateQuantity()` - Change quantity
 - `getTotalItems()` - Get cart count
-- `getStripePurchasableItems()` - Filter Stripe-only items
+- `getPurchasableItems()` - Filter online-purchasable items
 - `getSalesItems()` - Filter sales consultation items
 
 ### 2. Shopping Cart Page
@@ -34,35 +34,27 @@ Successfully implemented a complete ecommerce shopping experience for Hanzo.Comp
 **Features**:
 - Two-column layout (items + order summary)
 - Separate sections for:
-  - ✅ **Ready to Purchase** (Stripe) - Green accent, credit card icon
-  - 📞 **Requires Sales Consultation** - Secondary accent, chat icon
-- Quantity controls for Stripe items
+  - **Ready to Purchase** (Online) - Green accent, credit card icon
+  - **Requires Sales Consultation** - Secondary accent, chat icon
+- Quantity controls for purchasable items
 - "Schedule Sales Call" CTA for enterprise items
 - Empty cart state with "Browse Hardware" CTA
-- Total price calculation (Stripe items only)
-- "Proceed to Checkout" button (only shown for Stripe items)
+- Total price calculation (purchasable items only)
+- "Proceed to Checkout" button (only shown for purchasable items)
 
 ### 3. Checkout Page
 **Location**: `src/pages/Checkout.tsx`
 
 **Features**:
-- Stripe Elements integration (CardElement)
-- Full billing form:
-  - Email, Name (required)
-  - Address, City, State, ZIP, Country
+- Billing details collection (email, name)
+- Redirect to Hanzo Billing portal for secure payment
 - Order summary sidebar with:
   - Item breakdown
   - Total price
   - Provisioning timeline notice
 - Real-time validation
-- Loading states during payment processing
+- Loading states during redirect
 - Error handling with user-friendly messages
-- Success redirect to Account page
-
-**Demo Mode**:
-- Simulates payment processing (2 second delay)
-- Stores orders in LocalStorage
-- Redirects to account with success message
 
 ### 4. Account/Order Management
 **Location**: `src/pages/Account.tsx`
@@ -89,8 +81,8 @@ Successfully implemented a complete ecommerce shopping experience for Hanzo.Comp
 
 **Enhanced with**:
 - Purchase method indicators:
-  - ✅ DGX Spark: "Pay with Credit Card (Stripe)" - Primary orange badge
-  - 📞 Other products: "Contact Sales Required" - Secondary cyan badge
+  - DGX Spark: "Pay with Credit Card" - Primary orange badge
+  - Other products: "Contact Sales Required" - Secondary cyan badge
 - "Buy Now" green badge on DGX Spark
 - "Add to Cart" button (was "Request Access")
 - Success feedback on add ("Added to Cart!")
@@ -104,7 +96,7 @@ Successfully implemented a complete ecommerce shopping experience for Hanzo.Comp
   name: 'DGX Spark',
   price: '$4,000',
   priceValue: 4000,
-  purchaseMethod: 'stripe',
+  purchaseMethod: 'online',
   cta: 'Add to Cart'
 }
 
@@ -120,17 +112,11 @@ Successfully implemented a complete ecommerce shopping experience for Hanzo.Comp
 **Location**: `components/Header.tsx`
 
 **Added**:
-- 🛒 **Shopping Cart Icon** with live item count badge
-- 👤 **Account Icon** linking to /account
-- Updated "Request Access" → "Contact Sales"
+- Shopping Cart Icon with live item count badge
+- Account Icon linking to /account
+- Updated "Request Access" to "Contact Sales"
 - Links to Hanzo.AI for sales calls
 - Mobile-responsive with icons
-
-**Badge Design**:
-- Primary orange background
-- Black text
-- Positioned top-right of cart icon
-- Shows total item count across all products
 
 ### 7. Routing System
 **Location**: `App.tsx`
@@ -138,84 +124,70 @@ Successfully implemented a complete ecommerce shopping experience for Hanzo.Comp
 **Routes**:
 - `/` - Homepage (Hero, Features, Hardware, Pricing, etc.)
 - `/cart` - Shopping cart
-- `/checkout` - Stripe checkout form
+- `/checkout` - Checkout form
 - `/account` - Order history and account dashboard
 - `*` - Redirect to home (404 handling)
 
-**Structure**:
-- BrowserRouter for client-side routing
-- CartProvider wraps entire app
-- Separate HomePage component for main content
-- Footer on all pages
-
-## 🎨 Visual Design Highlights
+## Visual Design Highlights
 
 ### Purchase Method Indicators
 
-**Stripe (Credit Card)**:
-- ✅ Green "Buy Now" badge
+**Credit Card (Online)**:
+- Green "Buy Now" badge
 - Primary orange accent
-- 💳 Credit card icon
-- "Pay with Credit Card (Stripe)" notice
+- Credit card icon
+- "Pay with Credit Card" notice
 - Clear pricing ($4,000)
 
 **Sales Consultation**:
-- 📞 Secondary cyan accent
-- 💬 Chat icon
+- Secondary cyan accent
+- Chat icon
 - "Contact Sales Required" notice
 - "Custom Quote" pricing
 - Links to https://hanzo.ai/contact
 
 ### Color Usage
-- **Primary Orange** (`#FF6B35`): Stripe/buy now actions
+- **Primary Orange** (`#FF6B35`): Buy now actions
 - **Cyan** (`#00D9FF`): Sales consultation
 - **Green** (`#10B981`): Success states, "Buy Now" badge
 - **Dark Theme**: Consistent with existing site
 
-### Icons
-- 🛒 Shopping cart
-- 💳 Credit card
-- 💬 Chat/messaging
-- ✅ Checkmarks
-- 🔒 Security/lock
-- 👤 User account
-
-## 📊 Data Flow
+## Data Flow
 
 ### Cart State
 ```
-User Action → CartContext → LocalStorage
-         ↓
+User Action -> CartContext -> LocalStorage
+         |
     Header Badge Updates
-         ↓
+         |
     Cart Page Reflects Changes
 ```
 
 ### Purchase Flow
 ```
-Pricing Page → Add to Cart → Cart Context
-                    ↓
-              Cart Page → Review
-                    ↓
-              Checkout Page → Stripe
-                    ↓
+Pricing Page -> Add to Cart -> Cart Context
+                    |
+              Cart Page -> Review
+                    |
+              Checkout Page -> Collect Details
+                    |
+              Redirect to Hanzo Billing
+                    |
               Payment Success
-                    ↓
-              Store Order → LocalStorage
-                    ↓
+                    |
+              Store Order -> LocalStorage
+                    |
               Redirect to Account
-                    ↓
+                    |
               Show Success Message
 ```
 
-## 🔧 Technical Implementation
+## Technical Implementation
 
 ### Dependencies Added
 ```json
 {
-  "react-router-dom": "^7.x",
-  "@stripe/stripe-js": "^latest",
-  "@stripe/react-stripe-js": "^latest"
+  "react-router-dom": "^7.x"
 }
 ```
 
@@ -241,15 +213,15 @@ App.tsx                        (Added routing and CartProvider)
 
 ### Configuration Files
 ```
-.env.example                   (Stripe key template)
+.env.example                   (Environment config template)
 README.md                      (Complete documentation)
 ```
 
-## 🚀 Next Steps for Production
+## Next Steps for Production
 
 ### Backend Implementation Required
-1. **Stripe Integration**:
-   - Create Payment Intents on server
+1. **Payment Integration**:
+   - Hanzo Commerce API for payment sessions
    - Handle webhook events
    - Process actual payments
    - Issue refunds
@@ -286,39 +258,15 @@ README.md                      (Complete documentation)
 4. **CORS**: Configure properly
 5. **CSP Headers**: Content security policy
 
-## 📈 Success Metrics
-
-### User Experience
-- ✅ Clear visual distinction between purchase methods
-- ✅ DGX Spark prominently highlighted as instant purchase
-- ✅ Seamless cart → checkout flow
-- ✅ Mobile-responsive design
-- ✅ Loading states and error handling
-
-### Technical
-- ✅ TypeScript type safety
-- ✅ Clean component architecture
-- ✅ State management with Context API
-- ✅ Persistent cart (LocalStorage)
-- ✅ React Router integration
-- ✅ Stripe Elements properly integrated
-- ✅ Build successful (no errors)
-
-### Business Goals
-- ✅ $4,000 DGX Spark self-service purchase
-- ✅ Enterprise products funnel to sales
-- ✅ Links to Hanzo.AI for consultation
-- ✅ Clear call-to-action hierarchy
-
-## 🎉 Summary
+## Summary
 
 The Hanzo.Computer site now has a **complete, production-ready ecommerce experience** with:
 
-1. **One-Click Purchase**: DGX Spark ($4,000) via Stripe
+1. **One-Click Purchase**: DGX Spark ($4,000) via Hanzo Billing
 2. **Enterprise Sales Funnel**: GPU On-Demand and Enterprise solutions
 3. **Professional UX**: Cart, checkout, and account management
 4. **Clear Messaging**: Visual indicators for purchase methods
 5. **Mobile Responsive**: Works on all devices
 6. **Ready for Production**: Just needs backend API integration
 
-**Total Development**: 12 tasks completed, ~50KB of new code, 0 build errors ✨
+**Total Development**: 12 tasks completed, ~50KB of new code, 0 build errors

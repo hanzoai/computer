@@ -122,7 +122,7 @@ const WebhookEventLog: React.FC = () => {
       <div className="bg-white rounded-lg shadow-sm p-6">
         <h2 className="text-2xl font-bold text-gray-900">Webhook Events</h2>
         <p className="mt-1 text-sm text-gray-500">
-          Monitor and manage Stripe webhook events
+          Monitor and manage webhook events
         </p>
       </div>
 

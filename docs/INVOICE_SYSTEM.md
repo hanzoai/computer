@@ -63,7 +63,7 @@ Administrative invoice operations:
 - user_id: UUID (Foreign Key)
 - order_id: UUID (Foreign Key)
 - subscription_id: UUID (Foreign Key)
-- stripe_invoice_id: VARCHAR
+- external_invoice_id: VARCHAR
 - amount_due: DECIMAL
 - amount_paid: DECIMAL
 - status: VARCHAR ('draft', 'open', 'paid', 'void', 'uncollectible')
@@ -260,7 +260,7 @@ npm test -- invoice.test.ts
 2. **Custom Templates**: Multiple invoice templates for different use cases
 3. **Multi-language Support**: Invoices in customer's preferred language
 4. **Payment Links**: Direct payment links in invoice emails
-5. **Webhook Integration**: Stripe webhook for automatic invoice generation
+5. **Webhook Integration**: Webhook for automatic invoice generation
 6. **Credit Notes**: Support for refunds and adjustments
 7. **Batch Download**: ZIP file with multiple invoices
 8. **Invoice Scheduling**: Schedule invoice generation for future dates
