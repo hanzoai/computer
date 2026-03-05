@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { submitClusterRequest } from '../lib/supabase';
+import { submitClusterRequest } from '../lib/commerce';
 
 interface ClusterFormData {
   firstName: string;

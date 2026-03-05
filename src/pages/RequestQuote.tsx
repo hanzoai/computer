@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { submitRFQ } from '../lib/supabase';
+import { submitRFQ } from '../lib/commerce';
 import { sendRFQConfirmationClient, generateId, formatDate } from '../lib/email-client';
 import type { RFQData } from '../lib/email';
 

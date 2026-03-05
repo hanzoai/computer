@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../src/context/CartContext';
-import { supabase } from '../src/lib/supabase';
+import { supabase } from '../src/lib/auth';
 
 const Logo: React.FC = () => (
   <div className="flex items-center gap-2">

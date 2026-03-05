@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
+import { getUserOrders } from '../lib/commerce';
+import { getUser } from '../lib/auth';
 
 interface OrderDetails {
   id: string;
@@ -32,17 +33,23 @@ const CheckoutSuccess: React.FC = () => {
       }
 
       try {
-        // First try to fetch from Supabase
-        const { data: orderData, error } = await supabase
-          .from('orders')
-          .select('*')
-          .eq('payment_intent_id', paymentIntentId)
-          .single();
-
-        if (!error && orderData) {
-          setOrder(orderData);
+        // Fetch from Commerce API
+        const user = getUser();
+        if (user) {
+          const allOrders = await getUserOrders(user.id);
+          const matched = allOrders.find((o: any) => o.payment_intent_id === paymentIntentId);
+          if (matched) {
+            setOrder(matched as any);
+          } else {
+            // Fallback to localStorage
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const localOrder = orders.find((o: any) => o.payment_intent_id === paymentIntentId);
+            if (localOrder) {
+              setOrder(localOrder);
+            }
+          }
         } else {
-          // Fallback to localStorage
+          // Not signed in -- fallback to localStorage
           const orders = JSON.parse(localStorage.getItem('orders') || '[]');
           const localOrder = orders.find((o: any) => o.payment_intent_id === paymentIntentId);
           if (localOrder) {

@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import { supabase } from './auth';
 import { startOfDay, endOfDay, subDays, format, eachDayOfInterval, eachWeekOfInterval, eachMonthOfInterval, startOfWeek, startOfMonth } from 'date-fns';
 
 export interface RevenueDataPoint {

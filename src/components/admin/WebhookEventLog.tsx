@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { createClient } from '@/lib/supabase/client';
+import { supabase } from '../../lib/auth';
 import { format } from 'date-fns';
 import {
   CheckCircleIcon,
@@ -26,8 +26,6 @@ const WebhookEventLog: React.FC = () => {
   const [filterType, setFilterType] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
   const [selectedEvent, setSelectedEvent] = useState<WebhookEvent | null>(null);
-
-  const supabase = createClient();
 
   const eventTypes = [
     'all',

@@ -1,5 +1,5 @@
-import { supabase } from './supabase';
-import type { Order, User, Subscription } from './supabase';
+import { supabase } from './auth';
+import type { Order, User, Subscription } from './commerce';
 
 export interface InvoiceLineItem {
   description: string;

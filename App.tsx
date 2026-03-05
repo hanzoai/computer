@@ -35,6 +35,7 @@ import SignIn from './src/pages/SignIn';
 import SignUp from './src/pages/SignUp';
 import AdminDashboard from './src/pages/AdminDashboard';
 import Analytics from './src/pages/Analytics';
+import AuthCallback from './src/pages/AuthCallback';
 
 const HomePage: React.FC<{ onSelectProduct: (productName: string) => void }> = ({ onSelectProduct }) => {
   return (
@@ -111,6 +112,7 @@ const App: React.FC = () => {
               <Route path="/solutions" element={<Solutions />} />
               <Route path="/terms" element={<TermsOfService />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/auth/callback" element={<AuthCallback />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
             <Footer />
