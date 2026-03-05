@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
+import { supabase } from '../lib/auth';
 import { Mail, Lock, AlertCircle, Loader2 } from 'lucide-react';
 
 const SignIn: React.FC = () => {

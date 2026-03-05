@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import { supabase } from './auth';
 
 // Rate limit error class
 export class RateLimitError extends Error {

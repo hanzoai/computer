@@ -46,8 +46,8 @@ import {
   Funnel as RechartsFunction,
   FunnelChart
 } from 'recharts';
+import { getUser } from '../lib/auth';
 import {
-  supabase,
   checkAdminRole,
   getAllRFQs,
   getAllClusterRequests,
@@ -59,7 +59,7 @@ import {
   type RFQ,
   type ClusterRequest,
   type Quote
-} from '../lib/supabase';
+} from '../lib/commerce';
 import {
   getRevenueData,
   getConversionFunnel,
@@ -252,7 +252,7 @@ const AdminDashboard: React.FC = () => {
 
   const checkAuth = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const user = getUser();
 
       if (!user) {
         navigate('/signin');

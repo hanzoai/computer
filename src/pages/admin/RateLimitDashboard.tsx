@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../../lib/supabase';
+import { supabase } from '../../lib/auth';
 import { Shield, AlertTriangle, TrendingUp, Users, Activity, Clock, Settings, RefreshCw } from 'lucide-react';
 
 interface RateLimitStats {

@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { supabase, getUserRFQs, getUserQuotes, getUserOrders, getUserSubscriptions } from '../lib/supabase';
-import type { RFQ, Quote, Order, Subscription, User } from '../lib/supabase';
+import auth, { supabase } from '../lib/auth';
+import type { User } from '../lib/auth';
+import { getUserRFQs, getUserQuotes, getUserOrders, getUserSubscriptions, updateQuoteStatus } from '../lib/commerce';
+import type { RFQ, Quote, Order, Subscription } from '../lib/commerce';
 import DashboardInvoices from '../components/DashboardInvoices';
 
 const Dashboard: React.FC = () => {
@@ -38,15 +40,17 @@ const Dashboard: React.FC = () => {
   const loadDashboardData = async (userId: string) => {
     setLoading(true);
     try {
-      // Fetch user details first
-      const { data: userData, error: userError } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', userId)
-        .single();
-
-      if (!userError && userData) {
-        setUserDetails(userData);
+      // Get user details from auth
+      const authUser = await auth.fetchUserInfo();
+      if (authUser) {
+        setUserDetails({
+          id: authUser.id,
+          email: authUser.email,
+          name: authUser.name,
+          role: authUser.roles?.includes('admin') ? 'admin' : 'customer',
+          created_at: '',
+          updated_at: '',
+        } as User);
       }
 
       const [rfqsData, quotesData, ordersData, subscriptionsData] = await Promise.all([
@@ -73,28 +77,7 @@ const Dashboard: React.FC = () => {
 
   const handleAcceptQuote = async (quoteId: string) => {
     try {
-      const { error } = await supabase
-        .from('quotes')
-        .update({ status: 'accepted' })
-        .eq('id', quoteId);
-
-      if (error) throw error;
-
-      // Create an order from the accepted quote
-      const quote = quotes.find(q => q.id === quoteId);
-      if (quote) {
-        const orderNumber = `ORD-${Date.now()}`;
-        const { error: orderError } = await supabase
-          .from('orders')
-          .insert({
-            quote_id: quoteId,
-            order_number: orderNumber,
-            total: quote.total,
-            status: 'pending'
-          });
-
-        if (orderError) throw orderError;
-      }
+      await updateQuoteStatus(quoteId, 'accepted');
 
       // Reload dashboard data
       if (user) {
@@ -108,12 +91,7 @@ const Dashboard: React.FC = () => {
 
   const handleRejectQuote = async (quoteId: string) => {
     try {
-      const { error } = await supabase
-        .from('quotes')
-        .update({ status: 'rejected' })
-        .eq('id', quoteId);
-
-      if (error) throw error;
+      await updateQuoteStatus(quoteId, 'rejected');
 
       // Reload dashboard data
       if (user) {
@@ -131,15 +109,16 @@ const Dashboard: React.FC = () => {
     }
 
     try {
-      const { error } = await supabase
-        .from('subscriptions')
-        .update({
-          status: 'cancelled',
-          cancelled_at: new Date().toISOString()
-        })
-        .eq('id', subscriptionId);
-
-      if (error) throw error;
+      // Cancel via Commerce API
+      const token = localStorage.getItem('hanzo_access_token');
+      const commerceUrl = import.meta.env.VITE_COMMERCE_API_URL || 'https://billing.hanzo.ai';
+      await fetch(`${commerceUrl}/api/v1/billing/subscriptions/${subscriptionId}/cancel`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
 
       // Reload dashboard data
       if (user) {

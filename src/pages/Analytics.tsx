@@ -22,7 +22,7 @@ import {
   generateSampleData,
   type UsageStats
 } from '../lib/analytics';
-import { getUserUsage, getUsageSummary, getMonthlySpending } from '../lib/supabase';
+import { getUserUsage, getUsageSummary, getMonthlySpending } from '../lib/commerce';
 
 // Color palette for charts
 const COLORS = ['#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#6366f1'];

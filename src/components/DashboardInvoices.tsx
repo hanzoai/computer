@@ -8,8 +8,7 @@ import {
   formatCurrency,
   formatDate
 } from '../lib/invoices';
-import { supabase } from '../lib/supabase';
-import type { Order, Subscription, User } from '../lib/supabase';
+import type { Order, Subscription, User } from '../lib/commerce';
 import type { InvoiceData } from '../lib/invoices';
 
 interface DashboardInvoicesProps {

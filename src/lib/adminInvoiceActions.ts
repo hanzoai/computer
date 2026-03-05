@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import { supabase } from './auth';
 import { generateInvoicePDF } from '../components/Invoice';
 import {
   createInvoiceFromOrder,
@@ -7,7 +7,7 @@ import {
   storeInvoice,
   type InvoiceData
 } from './invoices';
-import type { Order, Subscription, User } from './supabase';
+import type { Order, Subscription, User } from './commerce';
 
 /**
  * Generate and send invoice to customer
