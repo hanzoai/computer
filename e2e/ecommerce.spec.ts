@@ -9,10 +9,10 @@ test.describe('Ecommerce Flow', () => {
 
     // Test DGX Spark highlight section
     await expect(page.getByRole('heading', { name: /DGX Spark/i }).first()).toBeVisible();
-    await expect(page.getByText(/Only \$4,000/i)).toBeVisible();
+    await expect(page.getByText(/Only \$3,999/i)).toBeVisible();
 
     // Add to cart from highlight section
-    await page.getByRole('button', { name: /Add to Cart - \$4,000/i }).click();
+    await page.getByRole('button', { name: /Add to Cart - \$3,999/i }).click();
 
     // Should navigate to cart
     await expect(page).toHaveURL('/cart');
@@ -23,7 +23,7 @@ test.describe('Ecommerce Flow', () => {
 
     // Verify cart item details
     await expect(page.getByRole('heading', { name: 'DGX Spark' })).toBeVisible();
-    await expect(page.getByText(/\$4,000/i)).toBeVisible();
+    await expect(page.getByText(/\$3,999/i)).toBeVisible();
 
     // Test quantity controls
     const plusButton = page.getByRole('button', { name: '+' });
@@ -130,7 +130,7 @@ test.describe('Navigation', () => {
 
     // Dropdown should appear
     await expect(page.getByText('DGX Spark').first()).toBeVisible();
-    await expect(page.getByText('$4,000 - Dedicated DGX Instance')).toBeVisible();
+    await expect(page.getByText('$3,999 - Dedicated DGX Instance')).toBeVisible();
     await expect(page.getByText('GPU On-Demand')).toBeVisible();
     await expect(page.getByText('H100 & H200 GPUs')).toBeVisible();
   });
@@ -224,7 +224,7 @@ test.describe('Cart Persistence', () => {
     await page.goto('/');
 
     // Add item to cart
-    await page.getByRole('button', { name: /Add to Cart - \$4,000/i }).click();
+    await page.getByRole('button', { name: /Add to Cart - \$3,999/i }).click();
     await expect(page).toHaveURL('/cart');
 
     // Add more items
