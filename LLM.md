@@ -1,4 +1,4 @@
-# LLM.md - Hanzo Computer
+# Hanzo Computer
 
 ## Overview
 A modern ecommerce platform for purchasing AI compute hardware, featuring the DGX Spark instance ($4,000) as the only credit card purchasable item, with enterprise solutions requiring sales consultati
