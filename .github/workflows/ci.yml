@@ -11,7 +11,7 @@ jobs:
     name: E2E Tests
     continue-on-error: true  # App requires Supabase env vars to render
     timeout-minutes: 60
-    runs-on: ubuntu-latest
+    runs-on: hanzo-build-linux-amd64
 
     steps:
     - uses: actions/checkout@v4
@@ -39,7 +39,7 @@ jobs:
 
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: hanzo-build-linux-amd64
 
     steps:
     - uses: actions/checkout@v4
@@ -64,7 +64,7 @@ jobs:
     name: Deploy to GitHub Pages
     needs: [test, build]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    runs-on: ubuntu-latest
+    runs-on: hanzo-deploy-linux-amd64
     permissions:
       contents: read
       pages: write
