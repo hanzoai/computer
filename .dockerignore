@@ -1,0 +1,13 @@
+node_modules
+dist
+.git
+.github
+*.md
+.env*
+.vscode
+e2e
+tests
+test-*.html
+test-*.mjs
+playwright.config.ts
+.playwright-mcp
