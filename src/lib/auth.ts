@@ -9,8 +9,10 @@ const IAM_URL = (import.meta.env.VITE_IAM_URL as string) || 'https://hanzo.id'
 const CLIENT_ID = (import.meta.env.VITE_IAM_CLIENT_ID as string) || 'app-computer'
 const REDIRECT_URI = `${window.location.origin}/auth/callback`
 
-const AUTHORIZE_URL = `${IAM_URL}/oauth/authorize`
-const TOKEN_URL = `${IAM_URL}/oauth/token`
+// Canonical Hanzo IAM OAuth surface lives under /v1/iam/* — the bare /oauth/*
+// and /api/* paths hit the SPA HTML catch-all (JSON-parse error → login bounce).
+const AUTHORIZE_URL = `${IAM_URL}/v1/iam/oauth/authorize`
+const TOKEN_URL = `${IAM_URL}/v1/iam/oauth/access_token`
 const USERINFO_URL = `${IAM_URL}/v1/iam/oauth/userinfo`
 
 // ---------------------------------------------------------------------------
