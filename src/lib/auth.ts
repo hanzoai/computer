@@ -12,7 +12,7 @@ const REDIRECT_URI = `${window.location.origin}/auth/callback`
 // Canonical Hanzo IAM OAuth surface lives under /v1/iam/* — the bare /oauth/*
 // and /api/* paths hit the SPA HTML catch-all (JSON-parse error → login bounce).
 const AUTHORIZE_URL = `${IAM_URL}/v1/iam/oauth/authorize`
-const TOKEN_URL = `${IAM_URL}/v1/iam/oauth/access_token`
+const TOKEN_URL = `${IAM_URL}/v1/iam/oauth/token`
 const USERINFO_URL = `${IAM_URL}/v1/iam/oauth/userinfo`
 
 // ---------------------------------------------------------------------------
