@@ -59,7 +59,7 @@ const TrustSecurity: React.FC = () => {
     },
     {
       title: "Regular Audits",
-      description: "Third-party security audits quarterly",
+      description: "Internal control reviews against the SOC 2 Type II control set",
       icon: "🛡️"
     },
     {
