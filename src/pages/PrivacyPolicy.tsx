@@ -151,7 +151,7 @@ const PrivacyPolicy: React.FC = () => {
               <li><strong>Isolated VPCs:</strong> Network isolation for customer workloads</li>
               <li><strong>Access Controls:</strong> Role-based permissions and multi-factor authentication</li>
               <li><strong>Security Monitoring:</strong> 24/7 intrusion detection and logging</li>
-              <li><strong>Regular Audits:</strong> SOC 2 Type II compliance audits</li>
+              <li><strong>Regular Audits:</strong> Internal control reviews against the SOC 2 Type II control set</li>
             </ul>
 
             <h3 className="text-xl font-semibold text-white mb-2">5.3 Data Isolation</h3>

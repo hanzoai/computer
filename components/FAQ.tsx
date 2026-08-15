@@ -23,7 +23,7 @@ const FAQ: React.FC = () => {
     },
     {
       question: "How secure is my data?",
-      answer: "All data is encrypted at rest (AES-256) and in transit (TLS 1.3). Each instance is isolated with dedicated VPC networking. We're SOC 2 Type II certified and GDPR compliant. Enterprise customers can add HIPAA compliance and private networking."
+      answer: "All data is encrypted at rest (AES-256) and in transit (TLS 1.3). Each instance is isolated with dedicated VPC networking. We run SOC 2 Type II controls — role-based access control and audit logging on top of that encryption — and we are GDPR compliant. Formal certification, including HIPAA with a BAA, is scoped per enterprise engagement. Tell us what your procurement needs."
     },
     {
       question: "What happens after 100 hours?",

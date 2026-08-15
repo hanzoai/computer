@@ -103,8 +103,8 @@ const FeaturesPage: React.FC = () => {
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-4">Enterprise Security</h3>
                 <p className="text-gray-400">
-                  SOC 2 Type II compliant infrastructure with dedicated VPCs, encrypted storage,
-                  and enterprise-grade access controls. Your data never leaves your secure environment.
+                  Controls aligned to the SOC 2 Type II control set — encryption in transit and at rest,
+                  role-based access control, and audit logging — on dedicated VPCs. Your data never leaves your secure environment.
                 </p>
               </div>
 
