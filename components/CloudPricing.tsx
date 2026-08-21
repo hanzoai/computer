@@ -354,7 +354,7 @@ const CloudPricing: React.FC = () => {
               </svg>
             </div>
             <h3 className="text-white font-bold mb-2">Enterprise SLA</h3>
-            <p className="text-gray-400 text-sm">99.9% uptime guarantee with 24/7 support</p>
+            <p className="text-gray-400 text-sm">Multi-region redundancy with automated failover, backed by 24/7 support</p>
           </div>
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-14 h-14 bg-green-500/10 rounded-full mb-4">

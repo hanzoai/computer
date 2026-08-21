@@ -81,8 +81,8 @@ const Testimonials: React.FC = () => {
             </div>
             <div className="h-12 w-px bg-dark-border"></div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-primary mb-1">99.9%</div>
-              <div className="text-gray-400 text-sm">Uptime SLA</div>
+              <div className="text-4xl font-bold text-primary mb-1">Multi-region</div>
+              <div className="text-gray-400 text-sm">Redundancy with automated failover</div>
             </div>
           </div>
         </div>

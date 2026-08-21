@@ -142,7 +142,7 @@ const TermsOfService: React.FC = () => {
               <li>AES-256 encryption at rest</li>
               <li>TLS 1.3 encryption in transit</li>
               <li>Isolated VPC networking</li>
-              <li>SOC 2 Type II certified infrastructure</li>
+              <li>SOC 2 Type II controls</li>
             </ul>
           </section>
 

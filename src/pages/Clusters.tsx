@@ -165,7 +165,7 @@ const Clusters: React.FC = () => {
               {
                 icon: '🔒',
                 title: 'Trusted & Secure',
-                description: 'Enterprise-grade security, SLAs, and round-the-clock support. SOC 2 Type II certified infrastructure.',
+                description: 'Enterprise-grade security, SLAs, and round-the-clock support. Infrastructure runs SOC 2 Type II controls.',
               },
               {
                 icon: '🚀',
@@ -299,7 +299,7 @@ const Clusters: React.FC = () => {
                 description: '24/7 assistance from HPC/AI specialists who can help optimize cluster performance. Enterprise-grade SLAs ensure peace of mind for mission-critical projects.',
                 features: [
                   '24/7 technical support from AI/HPC experts',
-                  '99.9% uptime SLA with service credits',
+                  'Multi-region redundancy with automated failover',
                   'Dedicated account manager for enterprise',
                   'Performance optimization consulting',
                 ],
@@ -642,7 +642,7 @@ const Clusters: React.FC = () => {
               <div className="text-gray-400">|</div>
               <div className="flex flex-col items-center">
                 <span className="text-2xl font-bold text-white opacity-60">SOC 2</span>
-                <span className="text-xs text-gray-400 font-semibold tracking-wider">TYPE II CERTIFIED</span>
+                <span className="text-xs text-gray-400 font-semibold tracking-wider">TYPE II CONTROLS</span>
               </div>
             </div>
           </div>
