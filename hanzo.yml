@@ -1,0 +1,12 @@
+# Read by hanzoai/ci (.hanzo/workflows/cicd.yml). The storefront is a Vite SPA
+# with no server: each push to main builds dist/ and publishes it to the Sites
+# plane as project `computer`, which serves computer.hanzo.ai.
+site:
+  slug: computer
+  dir: dist
+  build: npm ci && npm run build
+  on: [main]
+
+# The KMS tenant that holds the Sites plane deploy token.
+kms:
+  org: hanzo

@@ -69,7 +69,7 @@ const Solutions: React.FC = () => {
                 <h3 className="text-2xl font-bold text-white mb-4">Healthcare & Life Sciences</h3>
                 <p className="text-gray-400 mb-6">
                   Infrastructure for medical imaging analysis, drug discovery, genomics research,
-                  and clinical decision support systems. HIPAA with a BAA is scoped per engagement.
+                  and clinical decision support systems. HIPAA with a BAA is arranged per engagement.
                 </p>
                 <ul className="space-y-2 text-sm text-gray-400">
                   <li className="flex items-start">
