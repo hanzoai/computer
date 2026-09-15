@@ -6,7 +6,9 @@
 // ---------------------------------------------------------------------------
 
 const IAM_URL = (import.meta.env.VITE_IAM_URL as string) || 'https://hanzo.id'
-const CLIENT_ID = (import.meta.env.VITE_IAM_CLIENT_ID as string) || 'app-computer'
+// A client id is always <org>-<app>, which is the name IAM registers and the
+// only one hanzo.id answers for this host.
+const CLIENT_ID = (import.meta.env.VITE_IAM_CLIENT_ID as string) || 'hanzo-computer'
 const REDIRECT_URI = `${window.location.origin}/auth/callback`
 
 // Canonical Hanzo IAM OAuth surface lives under /v1/iam/* — the bare /oauth/*
