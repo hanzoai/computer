@@ -1,4 +1,6 @@
-import {
+// Types only: ./email is the server half and pulls in the mail transport, which
+// has no place in a browser bundle and no entry in package.json.
+import type {
   QuoteData,
   OrderData,
   SubscriptionData,
