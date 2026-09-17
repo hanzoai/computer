@@ -309,8 +309,8 @@ export const getOrdersWithoutInvoices = async (): Promise<Order[]> => {
     }
 
     // Filter orders that don't have invoices
-    const invoicedOrderIds = new Set(invoices.map(inv => inv.order_id));
-    return orders.filter(order => !invoicedOrderIds.has(order.id));
+    const invoicedOrderIds = new Set(invoices.map((inv: { order_id: string }) => inv.order_id));
+    return orders.filter((order: Order) => !invoicedOrderIds.has(order.id));
   } catch (error) {
     console.error('Error fetching orders without invoices:', error);
     return [];
@@ -335,7 +335,7 @@ export const markInvoiceAsPaid = async (
           .select('amount_due')
           .eq('id', invoiceId)
           .single()
-          .then(res => res.data?.amount_due || 0),
+          .then((res: { data: { amount_due: number } | null }) => res.data?.amount_due || 0),
         amount_due: 0
       })
       .eq('id', invoiceId)

@@ -424,8 +424,8 @@ ${revenueData.map(d => `${d.date},${d.revenue},${d.orders}`).join('\n')}`;
       validUntil.setDate(validUntil.getDate() + quoteValidDays);
 
       const quoteData = {
-        rfq_id: selectedRFQ || null,
-        cluster_request_id: selectedClusterRequest || null,
+        rfq_id: selectedRFQ || undefined,
+        cluster_request_id: selectedClusterRequest || undefined,
         quote_number: generateQuoteNumber(),
         items: quoteItems.filter(item => item.description),
         subtotal,
@@ -433,7 +433,7 @@ ${revenueData.map(d => `${d.date},${d.revenue},${d.orders}`).join('\n')}`;
         total,
         payment_terms: paymentTerms,
         valid_until: validUntil.toISOString(),
-        notes: quoteNotes || null,
+        notes: quoteNotes || undefined,
       };
 
       await createQuote(quoteData);

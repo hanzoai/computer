@@ -60,12 +60,9 @@ const SignUp: React.FC = () => {
       if (error) throw error;
 
       if (data.user) {
-        // Check if email confirmation is required
-        if (data.user.identities && data.user.identities.length === 0) {
-          setError('Please check your email to confirm your account.');
-        } else {
-          navigate('/dashboard');
-        }
+        // IAM owns email confirmation, and signUp redirects there rather than
+        // returning a user, so there is nothing to probe here.
+        navigate('/dashboard');
       }
     } catch (err: any) {
       setError(err.message || 'An error occurred during sign up');

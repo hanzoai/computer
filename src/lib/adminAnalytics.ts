@@ -54,6 +54,15 @@ export interface MetricCard {
   suffix?: string;
 }
 
+// The query client hands back untyped rows, so each callback below names the
+// columns its own select projects.
+interface RevenueRow { created_at: string; total: number; gpu_type: string | null }
+interface GPURow { gpu_type: string | null; total: number }
+interface TotalRow { total: number }
+interface StatusRow { created_at: string; status: string }
+interface DatedRow { id: string; created_at: string }
+interface QuoteLinkRow { rfq_id: string; created_at: string }
+
 // Get revenue data grouped by time period
 export async function getRevenueData(
   startDate: Date,
@@ -92,7 +101,7 @@ export async function getRevenueData(
   });
 
   // Aggregate orders into periods
-  orders?.forEach(order => {
+  orders?.forEach((order: RevenueRow) => {
     const orderDate = new Date(order.created_at);
     let key: string;
 
@@ -198,7 +207,7 @@ export async function getCustomerGrowth(
   });
 
   // Count new customers per day
-  customers?.forEach(customer => {
+  customers?.forEach((customer: DatedRow) => {
     const date = format(new Date(customer.created_at), 'yyyy-MM-dd');
     const growth = dailyGrowth.get(date);
     if (growth) {
@@ -228,7 +237,7 @@ export async function getGPUTypeBreakdown(
   const breakdown = new Map<string, GPUTypeBreakdown>();
   let totalRevenue = 0;
 
-  orders.forEach(order => {
+  orders.forEach((order: GPURow) => {
     const type = order.gpu_type || 'Unknown';
     const existing = breakdown.get(type) || {
       gpuType: type,
@@ -322,7 +331,7 @@ export async function getQuotePerformance(
   });
 
   // Aggregate quotes by day and status
-  quotes.forEach(quote => {
+  quotes.forEach((quote: StatusRow) => {
     const date = format(new Date(quote.created_at), 'yyyy-MM-dd');
     const perf = performanceMap.get(date);
 
@@ -370,13 +379,13 @@ export async function getAverageDealValue(
     return { overall: 0, byGPUType: new Map() };
   }
 
-  const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0);
+  const totalRevenue = orders.reduce((sum: number, order: GPURow) => sum + order.total, 0);
   const overall = totalRevenue / orders.length;
 
   const byGPUType = new Map<string, number>();
   const gpuTypeTotals = new Map<string, { total: number; count: number }>();
 
-  orders.forEach(order => {
+  orders.forEach((order: GPURow) => {
     const type = order.gpu_type || 'Unknown';
     const existing = gpuTypeTotals.get(type) || { total: 0, count: 0 };
     existing.total += order.total;
@@ -449,8 +458,8 @@ export async function getKeyMetrics(period: '7d' | '30d' | '90d' | '1y' = '30d')
     .gte('created_at', previousStartDate.toISOString())
     .lte('created_at', previousEndDate.toISOString());
 
-  const currentRevenue = currentOrders?.reduce((sum, order) => sum + order.total, 0) || 0;
-  const previousRevenue = previousOrders?.reduce((sum, order) => sum + order.total, 0) || 0;
+  const currentRevenue = currentOrders?.reduce((sum: number, order: TotalRow) => sum + order.total, 0) || 0;
+  const previousRevenue = previousOrders?.reduce((sum: number, order: TotalRow) => sum + order.total, 0) || 0;
   const revenueChange = previousRevenue > 0 ? ((currentRevenue - previousRevenue) / previousRevenue) * 100 : 0;
 
   const currentOrderCount = currentOrders?.length || 0;
@@ -524,8 +533,8 @@ export async function getResponseTimeMetrics(
     ['> 3 days', 0]
   ]);
 
-  rfqs.forEach(rfq => {
-    const quote = quotes.find(q => q.rfq_id === rfq.id);
+  rfqs.forEach((rfq: DatedRow) => {
+    const quote = quotes.find((q: QuoteLinkRow) => q.rfq_id === rfq.id);
     if (quote) {
       const rfqTime = new Date(rfq.created_at).getTime();
       const quoteTime = new Date(quote.created_at).getTime();

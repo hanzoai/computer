@@ -24,7 +24,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 interface RequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   body?: any;
-  headers?: HeadersInit;
+  headers?: Record<string, string>;
   retries?: number;
   retryDelay?: number;
 }
@@ -53,7 +53,7 @@ export async function apiRequest<T = any>(
   // Get current session for authentication
   const { data: { session } } = await supabase.auth.getSession();
 
-  const requestHeaders: HeadersInit = {
+  const requestHeaders: Record<string, string> = {
     'Content-Type': 'application/json',
     ...headers,
   };

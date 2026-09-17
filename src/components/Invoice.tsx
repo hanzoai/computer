@@ -322,7 +322,7 @@ export const InvoiceDocument: React.FC<{ invoice: InvoiceData }> = ({ invoice })
           <Text style={styles.grandTotalLabel}>Total</Text>
           <Text style={styles.grandTotalValue}>{formatCurrency(invoice.total)}</Text>
         </View>
-        {invoice.amountPaid > 0 && (
+        {invoice.amountPaid !== undefined && invoice.amountPaid > 0 && (
           <View style={styles.totalRow}>
             <Text style={styles.totalLabel}>Amount Paid</Text>
             <Text style={styles.totalValue}>{formatCurrency(invoice.amountPaid)}</Text>
