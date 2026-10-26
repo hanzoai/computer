@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { CartProvider } from './src/context/CartContext';
+import { Telemetry } from './src/telemetry';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import DGXSparkHighlight from './components/DGXSparkHighlight';
@@ -77,6 +78,7 @@ const App: React.FC = () => {
 
   return (
     <Router>
+      <Telemetry>
       <CartProvider>
         <div className="bg-dark-bg text-gray-200 font-sans antialiased relative overflow-x-hidden max-w-full">
           <div className="absolute top-0 left-0 w-full h-full z-0 overflow-hidden">
@@ -121,6 +123,7 @@ const App: React.FC = () => {
           <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
         </div>
       </CartProvider>
+      </Telemetry>
     </Router>
   );
 };

@@ -12,6 +12,9 @@
     "test:debug": "playwright test --debug"
   },
   "dependencies": {
+    "@hanzo/event": "0.3.58",
+    "@hanzo/gui": "8.3.5",
+    "@hanzo/ui": "8.29.12",
     "@heroicons/react": "^2.2.0",
     "@react-pdf/renderer": "^4.3.1",
     "@upstash/ratelimit": "^2.0.6",
@@ -19,8 +22,9 @@
     "date-fns": "^4.1.0",
     "express-rate-limit": "^8.2.1",
     "lucide-react": "^0.552.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "react-native-web": "^0.21.2",
     "react-router-dom": "^7.9.5",
     "recharts": "^3.3.0"
   },
@@ -40,5 +44,17 @@
     "tailwindcss": "^4.1.16",
     "typescript": "7.0.2",
     "vite": "^6.2.0"
+  },
+  "overrides": {
+    "@hanzo/event": "0.3.58",
+    "@hanzo/gui": "8.3.5",
+    "@hanzogui/animations-css": "8.3.5",
+    "@hanzogui/config": "8.3.5",
+    "@hanzogui/core": "8.3.5",
+    "@hanzogui/lucide-icons-2": "8.3.5",
+    "@hanzogui/telemetry": "8.3.5",
+    "@hanzogui/toast": "8.3.5",
+    "@hanzogui/web": "8.3.5",
+    "react-native": "0.87.0"
   }
 }

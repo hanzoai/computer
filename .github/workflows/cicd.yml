@@ -1,0 +1,14 @@
+# Every knob lives in /hanzo.yml; the build, test and publish are hanzoai/ci's.
+name: CI/CD
+on:
+  push: { branches: [main], tags: ["v*"] }
+  pull_request:
+  workflow_dispatch:
+jobs:
+  cicd:
+    permissions:
+      contents: write
+      packages: write
+      id-token: write
+    uses: hanzoai/ci/.github/workflows/build.yml@v2
+    secrets: inherit
