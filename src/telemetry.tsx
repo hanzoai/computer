@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import { startTags } from '@hanzo/event';
-import { AnalyticsProvider, useConsent, usePageview } from '@hanzo/event/react';
+import { AnalyticsProvider, usePageview } from '@hanzo/event/react';
 
 /** The one Hanzo Cloud telemetry front door: POST api.hanzo.ai/v1/event. */
 const HOST = 'https://api.hanzo.ai';
@@ -46,13 +46,13 @@ function Tags() {
 /**
  * Telemetry for hanzo.computer, mounted once inside the router. The provider owns
  * the one @hanzo/event client: the first pageview, error capture and the unload
- * flush; <Pageview> adds one per route change. The stream runs while the visitor
- * allows analytics, and <Banner> (@hanzo/ui's Consent) is the one banner that asks.
+ * flush; <Pageview> adds one per route change. The stream is first party and runs
+ * for every visitor; consent gates the third parties alone (startTags), and
+ * <Banner> (@hanzo/ui's Consent) is the one banner that asks.
  */
 export function Telemetry({ children }: { children: ReactNode }) {
-  const consent = useConsent();
   return (
-    <AnalyticsProvider config={{ product: 'site', host: HOST, ingestKey: KEY, enabled: consent.analytics }}>
+    <AnalyticsProvider config={{ product: 'site', host: HOST, ingestKey: KEY }}>
       <Tags />
       <Pageview />
       {children}

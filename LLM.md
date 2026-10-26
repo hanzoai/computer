@@ -40,7 +40,7 @@ computer/
 
 - `src/telemetry.tsx` is the docs.hanzo.ai pattern, mounted inside the router:
   `@hanzo/event`'s provider sends the pageview to `POST api.hanzo.ai/v1/event`
-  with project `computer`'s publishable key, `startTags` loads GA4 and the Meta
+  with project `computer`'s publishable key, for every visitor (first party), `startTags` loads GA4 and the Meta
   pixel from cloud (`GET /v1/project/tags`) once the visitor consents, and
   `src/banner.tsx` is `@hanzo/ui/consent` under its own `GuiProvider`, loaded
   lazily so the gui renderer stays off the first paint. No tag id lives here;
