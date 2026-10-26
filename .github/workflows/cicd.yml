@@ -10,5 +10,5 @@ jobs:
       contents: write
       packages: write
       id-token: write
-    uses: hanzoai/ci/.github/workflows/build.yml@v2
+    uses: hanzoai/ci/.github/workflows/build.yml@e89a08c70797285160c8fb3bb713dcef92d75184
     secrets: inherit
