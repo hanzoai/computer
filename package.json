@@ -12,7 +12,7 @@
     "test:debug": "playwright test --debug"
   },
   "dependencies": {
-    "@hanzo/event": "0.3.63",
+    "@hanzo/event": "0.3.66",
     "@hanzo/gui": "8.3.5",
     "@hanzo/ui": "8.29.14",
     "@heroicons/react": "^2.2.0",
@@ -46,7 +46,7 @@
     "vite": "^6.2.0"
   },
   "overrides": {
-    "@hanzo/event": "0.3.63",
+    "@hanzo/event": "0.3.66",
     "@hanzo/gui": "8.3.5",
     "@hanzogui/animations-css": "8.3.5",
     "@hanzogui/config": "8.3.5",
